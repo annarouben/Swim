@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# PostCSS config not needed with Tailwind v4 Vite plugin
+postcss.config.js
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
