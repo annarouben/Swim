@@ -31,7 +31,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
           <button 
             key={index}
             onClick={() => onSelectSlot(slot)}
-            className="w-full bg-white/10 hover:bg-white/20 rounded-xl p-4 text-left transition-all duration-200 border border-white/10 hover:border-white/30"
+            className="w-full bg-white/10 hover:bg-white/20 rounded-xl px-6 py-4 text-left transition-all duration-200 border border-white/10 hover:border-white/30"
           >
             <div className="flex justify-between items-center">
               <div>
@@ -40,14 +40,12 @@ function AvailableSlots({ slots, onSelectSlot }) {
                 </div>
                 <div className="text-sm text-white/70">{slot.date}</div>
               </div>
-              <div className="flex items-center space-x-2 min-w-[60px]">
+              <div className="flex items-center space-x-2">
                 <LaneVisual lane={slot.lane} />
-                <div className="flex items-center space-x-1 w-6">
+                <div className="flex items-center space-x-1 w-10 justify-end">
                   <img src="/Swim/images/user.svg" alt="User" className="w-4 h-4 filter brightness-0 invert opacity-75" />
-                  {isSharedLane(slot.lane) ? (
+                  {isSharedLane(slot.lane) && (
                     <img src="/Swim/images/user.svg" alt="User" className="w-4 h-4 filter brightness-0 invert opacity-75" />
-                  ) : (
-                    <div className="w-4"></div>
                   )}
                 </div>
               </div>
