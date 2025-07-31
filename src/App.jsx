@@ -3,6 +3,7 @@ import './App.css'
 
 function App() {
   const videoRef = useRef(null)
+  const [videoLoaded, setVideoLoaded] = useState(false)
 
   useEffect(() => {
     const video = videoRef.current
@@ -18,7 +19,14 @@ function App() {
   }, [])
 
   return (
-    <div className="fixed inset-0 min-h-screen min-w-full overflow-hidden bg-blue-900">
+    <div className="fixed inset-0 min-h-screen min-w-full overflow-hidden">
+      {/* Static water image background - shows while video loads */}
+      <div 
+        className={`absolute inset-0 w-full h-full bg-[url('./images/water.jpg')] bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${
+          videoLoaded ? 'opacity-0' : 'opacity-100'
+        }`}
+      />
+      
       {/* Video Background */}
       <video 
         ref={videoRef}
@@ -26,9 +34,18 @@ function App() {
         muted 
         playsInline
         preload="auto"
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-500 ${
+          videoLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
         onLoadStart={() => console.log('Video loading started')}
-        onCanPlay={() => console.log('Video can play')}
+        onCanPlay={() => {
+          console.log('Video can play')
+          setVideoLoaded(true)
+        }}
+        onLoadedData={() => {
+          console.log('Video data loaded')
+          setVideoLoaded(true)
+        }}
         onEnded={() => {
           console.log('Video ended - should stop now');
         }}
