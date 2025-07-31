@@ -22,7 +22,7 @@ function App() {
     <div className="fixed inset-0 min-h-screen min-w-full overflow-hidden">
       {/* Static water image background - shows while video loads */}
       <div 
-        className={`absolute inset-0 w-full h-full bg-[url('/images/water.jpg')] bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${
+        className={`absolute inset-0 w-full h-full bg-[url('/Swim/images/water.jpg')] bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${
           videoLoaded ? 'opacity-0' : 'opacity-100'
         }`}
       />
@@ -54,7 +54,7 @@ function App() {
           console.log('Video error details:', e.target.error);
         }}
       >
-        <source src="./images/movingwater.mp4" type="video/mp4" />
+        <source src="/Swim/images/movingwater.mp4" type="video/mp4" />
         <p>Your browser does not support the video tag.</p>
       </video>
       
