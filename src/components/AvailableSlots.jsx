@@ -3,10 +3,20 @@ function AvailableSlots({ slots, onSelectSlot }) {
 
   const LaneVisual = ({ lane }) => {
     return (
-      <div className="flex items-center space-x-2">
-        <span className="text-xs text-white/60 font-medium min-w-[40px]">
-          Lane {lane}
-        </span>
+      <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-1 min-w-[80px]">
+          <span className="text-xs text-white/90 font-medium">
+            Lane {lane} {isSharedLane(lane) ? 'Shared' : 'Single'}
+          </span>
+          <div className="flex items-center space-x-1 w-6">
+            <img src="/Swim/images/user.svg" alt="User" className="w-3 h-3 filter brightness-0 invert opacity-90" />
+            {isSharedLane(lane) ? (
+              <img src="/Swim/images/user.svg" alt="User" className="w-3 h-3 filter brightness-0 invert opacity-90" />
+            ) : (
+              <div className="w-3"></div>
+            )}
+          </div>
+        </div>
         <div className="flex items-center space-x-1">
           {[1, 2, 3, 4].map((laneNum) => (
             <div
@@ -31,7 +41,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
           <button 
             key={index}
             onClick={() => onSelectSlot(slot)}
-            className="w-full bg-white/10 hover:bg-white/20 rounded-xl px-6 py-4 text-left transition-all duration-200 border border-white/10 hover:border-white/30"
+            className="w-full bg-slate-800/50 hover:bg-slate-800/70 rounded-xl px-6 py-4 text-left transition-all duration-200 border border-slate-700/50 hover:border-slate-600/70 cursor-pointer hover:translate-y-[-2px] hover:shadow-[0_8px_25px_rgba(168,245,224,0.1)] shadow-md ring-1 ring-white/5"
           >
             <div className="flex justify-between items-center">
               <div>
@@ -40,15 +50,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
                 </div>
                 <div className="text-sm text-white/70">{slot.date}</div>
               </div>
-              <div className="flex items-center space-x-2">
-                <LaneVisual lane={slot.lane} />
-                <div className="flex items-center space-x-1 w-10 justify-end">
-                  <img src="/Swim/images/user.svg" alt="User" className="w-4 h-4 filter brightness-0 invert opacity-75" />
-                  {isSharedLane(slot.lane) && (
-                    <img src="/Swim/images/user.svg" alt="User" className="w-4 h-4 filter brightness-0 invert opacity-75" />
-                  )}
-                </div>
-              </div>
+              <LaneVisual lane={slot.lane} />
             </div>
           </button>
         ))}
