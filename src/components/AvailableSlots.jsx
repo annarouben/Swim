@@ -3,7 +3,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
 
   const LaneVisual = ({ lane }) => {
     return (
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-1 min-w-[80px]">
           <span className="text-xs text-white/90 font-medium">
             Lane {lane} {isSharedLane(lane) ? 'Shared' : 'Single'}
