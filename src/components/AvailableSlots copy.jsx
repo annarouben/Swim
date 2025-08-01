@@ -139,53 +139,13 @@ function AvailableSlots({ slots, onSelectSlot }) {
                     </div>
                   ) : (
                     <>
-                      {/* Mobile: Stacked layout */}
-                      <div className="flex-1 sm:hidden">
-                        <div className="flex items-baseline space-x-2 mb-1">
-                          <div className="text-xl font-semibold whitespace-nowrap">
-                            {slot.time}
-                          </div>
-                          <div className="text-xs text-white/70 whitespace-nowrap">
-                            {slot.date.length > 10 ? slot.date.substring(0, 3) + slot.date.substring(slot.date.indexOf(',')) : slot.date}
-                          </div>
-                        </div>
-                        <div className="text-xs text-white/90 font-medium whitespace-nowrap">
-                          Lane {slot.lane} • {isSharedLane(slot.lane) ? 'Shared' : 'Single'}
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3 sm:hidden">
-                        <div className="flex items-center space-x-1 w-6">
-                          <img src="/Swim/images/user.svg" alt="User" className="w-3 h-3 filter brightness-0 invert opacity-90" />
-                          {isSharedLane(slot.lane) ? (
-                            <img src="/Swim/images/user.svg" alt="User" className="w-3 h-3 filter brightness-0 invert opacity-90" />
-                          ) : (
-                            <div className="w-3"></div>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          {[1, 2, 3, 4].map((laneNum) => (
-                            <div
-                              key={laneNum}
-                              className={`w-1 h-6 rounded-full ${
-                                laneNum === slot.lane 
-                                  ? 'bg-[#A8F5E0]' 
-                                  : 'bg-white/30'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Desktop: Keep current layout */}
-                      <div className="hidden sm:block">
+                      <div>
                         <div className="text-xl font-semibold mb-1">
                           {slot.time}
                         </div>
                         <div className="text-sm text-white/70">{slot.date}</div>
                       </div>
-                      <div className="hidden sm:block">
-                        <LaneVisual lane={slot.lane} />
-                      </div>
+                      <LaneVisual lane={slot.lane} />
                     </>
                   )}
                 </div>
