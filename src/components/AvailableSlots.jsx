@@ -6,7 +6,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-1 min-w-[80px]">
           <span className="text-xs text-white/90 font-medium">
-            Lane {lane} {isSharedLane(lane) ? 'Shared' : 'Single'}
+            Lane {lane} • {isSharedLane(lane) ? 'Shared' : 'Single'}
           </span>
           <div className="flex items-center space-x-1 w-6">
             <img src="/Swim/images/user.svg" alt="User" className="w-3 h-3 filter brightness-0 invert opacity-90" />
@@ -35,7 +35,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
 
   return (
     <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-6 text-white shadow-2xl w-full max-w-md">
-      <h3 className="text-lg font-medium mb-4 text-center text-slate-200">Available Times</h3>
+      <h3 className="text-lg font-medium mb-4 text-center text-slate-200">Reserve</h3>
       <div className="space-y-3">
         {slots.map((slot, index) => (
           <button 
