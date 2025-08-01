@@ -1,9 +1,44 @@
 import { useState } from 'react';
 
 function AvailableSlots({ slots, onSelectSlot }) {
+  const [availableSlots, setAvailableSlots] = useState(slots);
   const [reservingSlots, setReservingSlots] = useState(new Set());
   const [completedSlots, setCompletedSlots] = useState(new Set());
   const isSharedLane = (lane) => lane === 1 || lane === 4;
+
+  // Helper function to generate next available time
+  const generateNextSlot = () => {
+    const lastSlot = availableSlots[availableSlots.length - 1];
+    const lastTime = new Date(`${lastSlot.date} ${lastSlot.time}`);
+    
+    // Add 1 hour to the last slot
+    const nextTime = new Date(lastTime.getTime() + 60 * 60 * 1000);
+    
+    // If it's past 9 PM, move to next day at 6 AM
+    if (nextTime.getHours() >= 21) {
+      nextTime.setDate(nextTime.getDate() + 1);
+      nextTime.setHours(6, 0, 0, 0);
+    }
+    
+    // Random lane selection
+    const lanes = [1, 2, 3, 4];
+    const randomLane = lanes[Math.floor(Math.random() * lanes.length)];
+    
+    return {
+      time: nextTime.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit', 
+        hour12: true 
+      }),
+      date: nextTime.toLocaleDateString('en-US', { 
+        weekday: 'short', 
+        month: 'short', 
+        day: 'numeric' 
+      }),
+      lane: randomLane,
+      id: Date.now() + Math.random() // Unique ID
+    };
+  };
 
   const handleReserve = (slot, index) => {
     // Start reservation animation
@@ -17,6 +52,10 @@ function AvailableSlots({ slots, onSelectSlot }) {
         return newSet;
       });
       setCompletedSlots(prev => new Set(prev).add(index));
+      
+      // Generate and add new slot to the bottom
+      const newSlot = generateNextSlot();
+      setAvailableSlots(prev => [...prev, newSlot]);
       
       // Call parent callback
       onSelectSlot?.(slot);
@@ -59,16 +98,16 @@ function AvailableSlots({ slots, onSelectSlot }) {
     <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-6 text-white shadow-2xl w-full max-w-md">
       <h3 className="text-lg font-medium mb-4 text-center text-slate-200">Reserve</h3>
       <div className="space-y-3">
-        {slots
+        {availableSlots
           .filter((_, index) => !completedSlots.has(index))
-          .map((slot, originalIndex) => {
-            const index = slots.indexOf(slot);
-            const isReserving = reservingSlots.has(index);
+          .map((slot, filteredIndex) => {
+            const originalIndex = availableSlots.indexOf(slot);
+            const isReserving = reservingSlots.has(originalIndex);
             
             return (
               <button 
-                key={index}
-                onClick={() => !isReserving && handleReserve(slot, index)}
+                key={slot.id || originalIndex}
+                onClick={() => !isReserving && handleReserve(slot, originalIndex)}
                 disabled={isReserving}
                 className={`w-full bg-slate-800/50 hover:bg-slate-800/70 rounded-xl px-6 py-4 text-left transition-all duration-300 border border-slate-700/50 hover:border-slate-600/70 shadow-md ring-1 ring-white/5 ${
                   isReserving 
