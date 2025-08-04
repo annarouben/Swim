@@ -38,10 +38,10 @@ function Home() {
   }
 
   return (
-    <div className="fixed inset-0 min-h-screen min-w-full overflow-hidden">
+    <div className="relative min-h-screen">
       {/* Static water image background - shows while video loads */}
       <div 
-        className={`absolute inset-0 w-full h-full bg-[url('/Swim/images/water.jpg')] bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${
+        className={`fixed inset-0 w-full h-full bg-[url('/Swim/images/water.jpg')] bg-cover bg-center bg-no-repeat transition-opacity duration-500 z-0 ${
           videoLoaded ? 'opacity-0' : 'opacity-100'
         }`}
       />
@@ -53,7 +53,7 @@ function Home() {
         muted 
         playsInline
         preload="auto"
-        className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-500 ${
+        className={`fixed inset-0 w-full h-full object-cover z-0 transition-opacity duration-500 ${
           videoLoaded ? 'opacity-100' : 'opacity-0'
         }`}
         onLoadStart={() => console.log('Video loading started')}
