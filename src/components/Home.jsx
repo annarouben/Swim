@@ -20,11 +20,11 @@ function Home() {
   }, [])
 
   // Mock data for reservations
-  const currentReservation = {
-    time: '2:30 PM',
-    date: 'Today, Feb 1',
-    lane: 3
-  }
+  const reservations = [
+    { time: '2:30 PM', date: 'Today, Feb 1', lane: 3 },
+    { time: '7:00 AM', date: 'Wed, Feb 3', lane: 1 },
+    { time: '6:30 PM', date: 'Fri, Feb 5', lane: 4 }
+  ]
 
   const availableSlots = [
     { time: '4:00 PM', date: 'Today, Feb 1', lane: 2 },
@@ -38,10 +38,10 @@ function Home() {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen w-full">
       {/* Static water image background - shows while video loads */}
       <div 
-        className={`fixed inset-0 w-full h-full bg-[url('/Swim/images/water.jpg')] bg-cover bg-center bg-no-repeat transition-opacity duration-500 z-0 ${
+        className={`fixed inset-0 w-full h-full bg-[url('/Swim/images/water.jpg')] bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${
           videoLoaded ? 'opacity-0' : 'opacity-100'
         }`}
       />
@@ -78,12 +78,12 @@ function Home() {
       </video>
 
       {/* Reservation Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-6">
-        <CurrentReservation reservation={currentReservation} />
+      <div className="relative z-10 flex flex-col items-center pt-20 pb-20 px-6 min-h-screen">
+        <CurrentReservation reservations={reservations} />
         <AvailableSlots slots={availableSlots} onSelectSlot={handleSelectSlot} />
       </div>
     </div>
   )
 }
 
-export default Home
+export default Home;
