@@ -6,6 +6,34 @@ function AvailableSlots({ slots, onSelectSlot }) {
   const [completedSlots, setCompletedSlots] = useState(new Set());
   const isSharedLane = (lane) => lane === 1 || lane === 4;
 
+  // Helper function to check if time is in the evening
+  const isEvening = (timeString) => {
+    const time = timeString.toLowerCase();
+    // Check for PM times that are typically evening (5 PM onwards)
+    if (time.includes('pm')) {
+      const hour = parseInt(time.split(':')[0]);
+      return hour >= 5 || hour === 12; // 5 PM onwards, plus 12 PM (noon could be considered evening meal time)
+    }
+    return false;
+  };
+
+  // Helper function to format time with moon icon
+  const formatTimeWithIcon = (timeString) => {
+    return (
+      <div className="flex items-center space-x-2">
+        <span>{timeString}</span>
+        {isEvening(timeString) && (
+          <img 
+            src="./images/moon.svg"
+            alt="Evening"
+            className="w-4 h-4 text-slate-300"
+            style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(6%) saturate(459%) hue-rotate(167deg) brightness(91%) contrast(89%)' }}
+          />
+        )}
+      </div>
+    );
+  };
+
   // Helper function to generate next available time
   const generateNextSlot = () => {
     const lastSlot = availableSlots[availableSlots.length - 1];
@@ -143,7 +171,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
                       <div className="w-full sm:hidden">
                         <div className="flex items-baseline space-x-2 mb-2">
                           <div className="text-xl font-semibold whitespace-nowrap">
-                            {slot.time}
+                            {formatTimeWithIcon(slot.time)}
                           </div>
                           <div className="text-xs text-white/70 whitespace-nowrap">
                             {slot.date}
@@ -179,7 +207,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
                       {/* Desktop: Keep current layout */}
                       <div className="hidden sm:block">
                         <div className="text-xl font-semibold mb-1">
-                          {slot.time}
+                          {formatTimeWithIcon(slot.time)}
                         </div>
                         <div className="text-sm text-white/70">{slot.date}</div>
                       </div>

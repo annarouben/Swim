@@ -76,6 +76,36 @@ function CurrentReservation({ reservations = [] }) {
     );
   };
 
+  // Helper function to check if time is in the evening
+  const isEvening = (timeString) => {
+    const time = timeString.toLowerCase();
+    // Check for PM times that are typically evening (5 PM onwards)
+    if (time.includes('pm')) {
+      const hour = parseInt(time.split(':')[0]);
+      return hour >= 5 || hour === 12; // 5 PM onwards, plus 12 PM (noon could be considered evening meal time)
+    }
+    return false;
+  };
+
+  // Helper function to format time with moon icon
+  const formatTimeWithIcon = (timeString) => {
+    return (
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white whitespace-nowrap">
+          {timeString}
+        </span>
+        {isEvening(timeString) && (
+          <img 
+            src="./images/moon.svg"
+            alt="Evening"
+            className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-slate-300"
+            style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(6%) saturate(459%) hue-rotate(167deg) brightness(91%) contrast(89%)' }}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div 
       className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-6 mb-8 text-center text-white shadow-2xl relative w-full max-w-lg"
@@ -116,8 +146,8 @@ function CurrentReservation({ reservations = [] }) {
       <div className="px-8">
         <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservations</h2>
 
-        <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 text-white">{currentReservation.time}</div>
-        <div className="text-xl sm:text-2xl font-semibold text-slate-100 mb-3">Lane {currentReservation.lane}</div>
+        {formatTimeWithIcon(currentReservation.time)}
+        <div className="text-xl sm:text-2xl font-semibold text-slate-100 mb-3 whitespace-nowrap">Lane {currentReservation.lane}</div>
         <div className="mb-4">
           {formatDateWithBadge(currentReservation.date)}
         </div>
