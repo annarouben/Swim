@@ -45,7 +45,7 @@ function CurrentReservation({ reservations = [] }) {
   if (!reservations || reservations.length === 0) {
     return (
       <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-6 mb-8 text-center text-white shadow-2xl w-full max-w-lg">
-        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Next Reservation</h2>
+        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservation</h2>
         <div className="text-slate-400">No upcoming reservations</div>
       </div>
     );
@@ -113,8 +113,8 @@ function CurrentReservation({ reservations = [] }) {
       )}
 
       {/* Content area with padding to avoid arrow overlap */}
-      <div className="px-12">
-        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Next Reservation</h2>
+      <div className="px-8">
+        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservation</h2>
         
         {/* Counter */}
         {reservations.length > 1 && (
@@ -123,8 +123,8 @@ function CurrentReservation({ reservations = [] }) {
           </div>
         )}
 
-        <div className="text-5xl font-bold mb-2 text-white">{currentReservation.time}</div>
-        <div className="text-2xl font-semibold text-slate-100 mb-3">Lane {currentReservation.lane}</div>
+        <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 text-white">{currentReservation.time}</div>
+        <div className="text-xl sm:text-2xl font-semibold text-slate-100 mb-3">Lane {currentReservation.lane}</div>
         <div className="mb-2">
           {formatDateWithBadge(currentReservation.date)}
         </div>
