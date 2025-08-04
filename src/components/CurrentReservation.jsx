@@ -45,7 +45,7 @@ function CurrentReservation({ reservations = [] }) {
   if (!reservations || reservations.length === 0) {
     return (
       <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-6 mb-8 text-center text-white shadow-2xl w-full max-w-lg">
-        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservation</h2>
+        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservations</h2>
         <div className="text-slate-400">No upcoming reservations</div>
       </div>
     );
@@ -114,20 +114,38 @@ function CurrentReservation({ reservations = [] }) {
 
       {/* Content area with padding to avoid arrow overlap */}
       <div className="px-8">
-        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservation</h2>
-        
-        {/* Counter */}
-        {reservations.length > 1 && (
-          <div className="text-xs text-slate-400 mb-3">
-            {currentIndex + 1} of {reservations.length}
-          </div>
-        )}
+        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservations</h2>
 
         <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 text-white">{currentReservation.time}</div>
         <div className="text-xl sm:text-2xl font-semibold text-slate-100 mb-3">Lane {currentReservation.lane}</div>
-        <div className="mb-2">
+        <div className="mb-4">
           {formatDateWithBadge(currentReservation.date)}
         </div>
+        
+        {/* Pagination section - counter and dots */}
+        {reservations.length > 1 && (
+          <div className="mt-4">
+            {/* Counter */}
+            <div className="text-xs text-slate-400 mb-2">
+              {currentIndex + 1} of {reservations.length}
+            </div>
+            
+            {/* Pagination dots */}
+            <div className="flex justify-center items-center space-x-2">
+              {reservations.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                    index === currentIndex 
+                      ? 'bg-[#A8F5E0]' 
+                      : 'bg-slate-700/80 hover:bg-slate-600/80'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
