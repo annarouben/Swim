@@ -9,11 +9,11 @@ function Home() {
   useEffect(() => {
     const video = videoRef.current
     if (video) {
-      // Stop the video after 2 seconds
+      // Stop the video after 10 seconds
       const timer = setTimeout(() => {
         video.pause()
-        console.log('Video stopped after 2 seconds')
-      }, 2000)
+        console.log('Video stopped after 10 seconds')
+      }, 10000)
 
       return () => clearTimeout(timer)
     }
