@@ -115,7 +115,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
                     : 'cursor-pointer hover:translate-y-[-2px] hover:shadow-[0_8px_25px_rgba(168,245,224,0.1)]'
                 }`}
               >
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-start">
                   {isReserving ? (
                     <div className="flex items-center justify-center w-full space-x-3">
                       <div className="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full">
@@ -140,8 +140,8 @@ function AvailableSlots({ slots, onSelectSlot }) {
                   ) : (
                     <>
                       {/* Mobile: Stacked layout */}
-                      <div className="flex-1 sm:hidden">
-                        <div className="flex items-baseline space-x-2 mb-1">
+                      <div className="w-full sm:hidden">
+                        <div className="flex items-baseline space-x-2 mb-2">
                           <div className="text-xl font-semibold whitespace-nowrap">
                             {slot.time}
                           </div>
@@ -149,30 +149,30 @@ function AvailableSlots({ slots, onSelectSlot }) {
                             {slot.date.length > 10 ? slot.date.substring(0, 3) + slot.date.substring(slot.date.indexOf(',')) : slot.date}
                           </div>
                         </div>
-                        <div className="text-xs text-white/90 font-medium whitespace-nowrap">
-                          Lane {slot.lane} • {isSharedLane(slot.lane) ? 'Shared' : 'Single'}
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3 sm:hidden">
-                        <div className="flex items-center space-x-1 w-6">
-                          <img src="/Swim/images/user.svg" alt="User" className="w-3 h-3 filter brightness-0 invert opacity-90" />
-                          {isSharedLane(slot.lane) ? (
+                        <div className="flex items-center space-x-4">
+                          <span className="text-xs text-white/90 font-medium whitespace-nowrap">
+                            Lane {slot.lane} • {isSharedLane(slot.lane) ? 'Shared' : 'Single'}
+                          </span>
+                          <div className="flex items-center space-x-1 w-6">
                             <img src="/Swim/images/user.svg" alt="User" className="w-3 h-3 filter brightness-0 invert opacity-90" />
-                          ) : (
-                            <div className="w-3"></div>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          {[1, 2, 3, 4].map((laneNum) => (
-                            <div
-                              key={laneNum}
-                              className={`w-1 h-6 rounded-full ${
-                                laneNum === slot.lane 
-                                  ? 'bg-[#A8F5E0]' 
-                                  : 'bg-white/30'
-                              }`}
-                            />
-                          ))}
+                            {isSharedLane(slot.lane) ? (
+                              <img src="/Swim/images/user.svg" alt="User" className="w-3 h-3 filter brightness-0 invert opacity-90" />
+                            ) : (
+                              <div className="w-3"></div>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            {[1, 2, 3, 4].map((laneNum) => (
+                              <div
+                                key={laneNum}
+                                className={`w-1 h-6 rounded-full ${
+                                  laneNum === slot.lane 
+                                    ? 'bg-[#A8F5E0]' 
+                                    : 'bg-white/30'
+                                }`}
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
 
