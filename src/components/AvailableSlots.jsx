@@ -146,7 +146,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
                             {slot.time}
                           </div>
                           <div className="text-xs text-white/70 whitespace-nowrap">
-                            {slot.date.length > 10 ? slot.date.substring(0, 3) + slot.date.substring(slot.date.indexOf(',')) : slot.date}
+                            {slot.date}
                           </div>
                         </div>
                         <div className="flex items-center space-x-4">
