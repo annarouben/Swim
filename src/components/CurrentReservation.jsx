@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
-function CurrentReservation({ reservations = [] }) {
+function CurrentReservation({ reservations = [], onCancelReservation }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [reservationToCancel, setReservationToCancel] = useState(null);
 
   const nextReservation = () => {
     if (currentIndex < reservations.length - 1) {
@@ -16,6 +19,26 @@ function CurrentReservation({ reservations = [] }) {
       setCurrentIndex(currentIndex - 1);
     }
   };
+
+  // Handle escape key to close dialog
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && showCancelDialog) {
+        setShowCancelDialog(false);
+      }
+    };
+
+    if (showCancelDialog) {
+      document.addEventListener('keydown', handleEscape);
+      // Prevent body scroll when dialog is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showCancelDialog]);
 
   // Minimum swipe distance
   const minSwipeDistance = 50;
@@ -106,6 +129,38 @@ function CurrentReservation({ reservations = [] }) {
     );
   };
 
+  // Handle cancel reservation click
+  const handleCancelClick = () => {
+    setReservationToCancel(currentReservation);
+    setShowCancelDialog(true);
+  };
+
+  // Handle cancel confirmation dialog
+  const handleCancelDialog = () => {
+    setShowCancelDialog(false);
+  };
+
+  // Handle backdrop click to close dialog
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      setShowCancelDialog(false);
+    }
+  };
+
+  const handleConfirmCancel = () => {
+    // Call the parent's cancel function with the reservation and current index
+    if (onCancelReservation && reservationToCancel) {
+      onCancelReservation(reservationToCancel, currentIndex);
+    }
+    setShowCancelDialog(false);
+    
+    // If we cancelled the last reservation and there are still reservations left,
+    // adjust the current index to stay within bounds
+    if (currentIndex >= reservations.length - 1 && reservations.length > 1) {
+      setCurrentIndex(Math.max(0, currentIndex - 1));
+    }
+  };
+
   return (
     <div 
       className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-6 mb-8 text-center text-white shadow-2xl relative w-full max-w-lg"
@@ -113,6 +168,19 @@ function CurrentReservation({ reservations = [] }) {
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
+      {/* Cancel Button - Top Right Corner */}
+      <button
+        onClick={handleCancelClick}
+        className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-600/40 transition-all duration-200 hover:scale-110"
+      >
+        <img 
+          src="./images/trashcan.svg"
+          alt="Cancel"
+          className="w-4 h-4"
+          style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(6%) saturate(459%) hue-rotate(167deg) brightness(91%) contrast(89%)' }}
+        />
+      </button>
+
       {/* Navigation arrows - only show when there's a previous/next reservation */}
       {reservations.length > 1 && (
         <>
@@ -120,7 +188,7 @@ function CurrentReservation({ reservations = [] }) {
           {currentIndex > 0 && (
             <button
               onClick={prevReservation}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-all bg-slate-700/80 text-white hover:bg-slate-600/80 hover:scale-110"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-all text-white hover:bg-slate-600/40 hover:scale-110"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -132,7 +200,7 @@ function CurrentReservation({ reservations = [] }) {
           {currentIndex < reservations.length - 1 && (
             <button
               onClick={nextReservation}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-all bg-slate-700/80 text-white hover:bg-slate-600/80 hover:scale-110"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-all text-white hover:bg-slate-600/40 hover:scale-110"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -177,6 +245,51 @@ function CurrentReservation({ reservations = [] }) {
           </div>
         )}
       </div>
+
+      {/* Cancel Confirmation Dialog */}
+      {showCancelDialog && createPortal(
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-start justify-center pt-20 p-4"
+          onClick={handleBackdropClick}
+        >
+          <div className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-md rounded-2xl p-8 w-full max-w-md text-center text-white shadow-2xl border border-slate-700/50">
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-4 text-slate-200">Cancel Reservation?</h3>
+              
+              {/* Time */}
+              <div className="text-3xl font-bold text-white mb-2">
+                {reservationToCancel?.time}
+              </div>
+              
+              {/* Lane */}
+              <div className="text-xl font-semibold text-slate-100 mb-2">
+                Lane {reservationToCancel?.lane}
+              </div>
+              
+              {/* Date */}
+              <div className="text-slate-200">
+                {reservationToCancel?.date}
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={handleConfirmCancel}
+                className="w-full px-4 py-3 bg-[#A8F5E0] hover:bg-[#95E6D3] text-slate-800 rounded-lg transition-all duration-200 font-medium"
+              >
+                Cancel Reservation
+              </button>
+              <button
+                onClick={handleCancelDialog}
+                className="w-full px-4 py-3 bg-slate-700/80 hover:bg-slate-600/80 text-slate-200 rounded-lg transition-all duration-200 font-medium"
+              >
+                Keep Reservation
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

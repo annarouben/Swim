@@ -5,6 +5,11 @@ import AvailableSlots from './AvailableSlots'
 function Home() {
   const videoRef = useRef(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const [reservations, setReservations] = useState([
+    { time: '2:30 PM', date: 'Today, Feb 1', lane: 3 },
+    { time: '7:00 AM', date: 'Wed, Feb 3', lane: 1 },
+    { time: '6:30 PM', date: 'Fri, Feb 5', lane: 4 }
+  ])
 
   useEffect(() => {
     const video = videoRef.current
@@ -19,13 +24,6 @@ function Home() {
     }
   }, [])
 
-  // Mock data for reservations
-  const reservations = [
-    { time: '2:30 PM', date: 'Today, Feb 1', lane: 3 },
-    { time: '7:00 AM', date: 'Wed, Feb 3', lane: 1 },
-    { time: '6:30 PM', date: 'Fri, Feb 5', lane: 4 }
-  ]
-
   const availableSlots = [
     { time: '4:00 PM', date: 'Today, Feb 1', lane: 2 },
     { time: '6:30 PM', date: 'Today, Feb 1', lane: 1 },
@@ -35,6 +33,13 @@ function Home() {
   const handleSelectSlot = (slot) => {
     console.log('Selected slot:', slot)
     // Handle reservation logic here
+  }
+
+  const handleCancelReservation = (reservation, index) => {
+    console.log('Cancelling reservation:', reservation)
+    // Remove the reservation from the array
+    setReservations(prev => prev.filter((_, i) => i !== index))
+    // Here you would also make an API call to cancel the reservation on the server
   }
 
   return (
@@ -79,7 +84,10 @@ function Home() {
 
       {/* Reservation Content */}
       <div className="relative z-10 flex flex-col items-center pt-10 pb-10 px-3 min-h-screen">
-        <CurrentReservation reservations={reservations} />
+        <CurrentReservation 
+          reservations={reservations} 
+          onCancelReservation={handleCancelReservation}
+        />
         <AvailableSlots slots={availableSlots} onSelectSlot={handleSelectSlot} />
       </div>
     </div>
