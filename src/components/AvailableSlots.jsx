@@ -34,6 +34,11 @@ function AvailableSlots({ slots, onSelectSlot }) {
     );
   };
 
+  // Helper function to extract date from slot
+  const getDateFromSlot = (slot) => {
+    return slot.date;
+  };
+
   // Helper function to generate next available time
   const generateNextSlot = () => {
     const lastSlot = availableSlots[availableSlots.length - 1];
@@ -132,17 +137,34 @@ function AvailableSlots({ slots, onSelectSlot }) {
             const originalIndex = availableSlots.indexOf(slot);
             const isReserving = reservingSlots.has(originalIndex);
             
+            // Check if we need a date separator
+            const prevSlot = filteredIndex > 0 ? 
+              availableSlots.filter((_, index) => !completedSlots.has(index))[filteredIndex - 1] : 
+              null;
+            const needsDateSeparator = prevSlot && getDateFromSlot(prevSlot) !== getDateFromSlot(slot);
+            
             return (
-              <button 
-                key={slot.id || originalIndex}
-                onClick={() => !isReserving && handleReserve(slot, originalIndex)}
-                disabled={isReserving}
-                className={`w-full bg-slate-800/50 hover:bg-slate-800/70 rounded-xl px-6 py-4 text-left transition-all duration-300 border border-slate-700/50 hover:border-slate-600/70 shadow-md ring-1 ring-white/5 ${
-                  isReserving 
-                    ? 'cursor-default transform scale-[1.02]' 
-                    : 'cursor-pointer hover:translate-y-[-2px] hover:shadow-[0_8px_25px_rgba(168,245,224,0.1)]'
-                }`}
-              >
+              <div key={slot.id || originalIndex}>
+                {/* Date separator */}
+                {needsDateSeparator && (
+                  <div className="flex items-center my-4">
+                    <div className="flex-1 h-px bg-slate-600/40"></div>
+                    <div className="px-3 text-xs text-slate-200 font-medium">
+                      {slot.date}
+                    </div>
+                    <div className="flex-1 h-px bg-slate-600/40"></div>
+                  </div>
+                )}
+                
+                <button 
+                  onClick={() => !isReserving && handleReserve(slot, originalIndex)}
+                  disabled={isReserving}
+                  className={`w-full bg-slate-800/50 hover:bg-slate-800/70 rounded-xl px-6 py-4 text-left transition-all duration-300 border border-slate-700/50 hover:border-slate-600/70 shadow-md ring-1 ring-white/5 ${
+                    isReserving 
+                      ? 'cursor-default transform scale-[1.02]' 
+                      : 'cursor-pointer hover:translate-y-[-2px] hover:shadow-[0_8px_25px_rgba(168,245,224,0.1)]'
+                  }`}
+                >
                 <div className="flex justify-between items-start">
                   {isReserving ? (
                     <div className="flex items-center justify-center w-full space-x-3">
@@ -218,6 +240,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
                   )}
                 </div>
               </button>
+              </div>
             );
           })}
       </div>
