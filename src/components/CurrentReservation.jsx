@@ -224,7 +224,7 @@ function CurrentReservation({ reservations = [], onCancelReservation }) {
         {reservations.length > 1 && (
           <div className="mt-4">
             {/* Counter */}
-            <div className="text-xs text-slate-400 mb-2">
+            <div className="text-xs text-slate-200 mb-2">
               {currentIndex + 1} of {reservations.length}
             </div>
             

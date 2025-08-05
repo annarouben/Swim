@@ -6,9 +6,9 @@ function Home() {
   const videoRef = useRef(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [reservations, setReservations] = useState([
-    { time: '2:30 PM', date: 'Today, Feb 1', lane: 3 },
-    { time: '7:00 AM', date: 'Wed, Feb 3', lane: 1 },
-    { time: '6:30 PM', date: 'Fri, Feb 5', lane: 4 }
+    { time: '2:30 PM', date: 'Today, Aug 5', lane: 3 },
+    { time: '7:00 AM', date: 'Wed, Aug 7', lane: 1 },
+    { time: '6:30 PM', date: 'Fri, Aug 9', lane: 4 }
   ])
 
   useEffect(() => {
@@ -25,9 +25,49 @@ function Home() {
   }, [])
 
   const availableSlots = [
-    { time: '4:00 PM', date: 'Today, Feb 1', lane: 2 },
-    { time: '6:30 PM', date: 'Today, Feb 1', lane: 1 },
-    { time: '7:00 AM', date: 'Tomorrow, Feb 2', lane: 4 }
+    // Today's slots
+    { time: '4:00 PM', date: 'Today, Aug 5', lane: 2 },
+    { time: '5:30 PM', date: 'Today, Aug 5', lane: 3 },
+    { time: '6:30 PM', date: 'Today, Aug 5', lane: 1 },
+    { time: '8:00 PM', date: 'Today, Aug 5', lane: 4 },
+    
+    // Tomorrow's slots
+    { time: '7:00 AM', date: 'Tomorrow, Aug 6', lane: 4 },
+    { time: '8:30 AM', date: 'Tomorrow, Aug 6', lane: 2 },
+    { time: '10:00 AM', date: 'Tomorrow, Aug 6', lane: 1 },
+    { time: '2:00 PM', date: 'Tomorrow, Aug 6', lane: 3 },
+    { time: '5:00 PM', date: 'Tomorrow, Aug 6', lane: 2 },
+    { time: '7:30 PM', date: 'Tomorrow, Aug 6', lane: 4 },
+    
+    // Day after tomorrow
+    { time: '6:00 AM', date: 'Wed, Aug 7', lane: 1 },
+    { time: '9:00 AM', date: 'Wed, Aug 7', lane: 3 },
+    { time: '11:30 AM', date: 'Wed, Aug 7', lane: 2 },
+    { time: '1:00 PM', date: 'Wed, Aug 7', lane: 4 },
+    { time: '4:30 PM', date: 'Wed, Aug 7', lane: 1 },
+    { time: '6:00 PM', date: 'Wed, Aug 7', lane: 3 },
+    
+    // Thursday
+    { time: '6:30 AM', date: 'Thu, Aug 8', lane: 2 },
+    { time: '8:00 AM', date: 'Thu, Aug 8', lane: 4 },
+    { time: '12:00 PM', date: 'Thu, Aug 8', lane: 1 },
+    { time: '3:30 PM', date: 'Thu, Aug 8', lane: 3 },
+    { time: '5:30 PM', date: 'Thu, Aug 8', lane: 2 },
+    { time: '8:30 PM', date: 'Thu, Aug 8', lane: 4 },
+    
+    // Friday
+    { time: '7:30 AM', date: 'Fri, Aug 9', lane: 1 },
+    { time: '10:30 AM', date: 'Fri, Aug 9', lane: 3 },
+    { time: '1:30 PM', date: 'Fri, Aug 9', lane: 2 },
+    { time: '4:00 PM', date: 'Fri, Aug 9', lane: 4 },
+    { time: '6:30 PM', date: 'Fri, Aug 9', lane: 1 },
+    
+    // Saturday  
+    { time: '6:00 AM', date: 'Sat, Aug 10', lane: 3 },
+    { time: '9:30 AM', date: 'Sat, Aug 10', lane: 2 },
+    { time: '12:30 PM', date: 'Sat, Aug 10', lane: 4 },
+    { time: '3:00 PM', date: 'Sat, Aug 10', lane: 1 },
+    { time: '7:00 PM', date: 'Sat, Aug 10', lane: 3 }
   ]
 
   const handleSelectSlot = (slot) => {

@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import CalendarAvailableSpots from './CalendarAvailableSpots';
 
 function AvailableSlots({ slots, onSelectSlot }) {
+  const [showCalendar, setShowCalendar] = useState(false);
   const [availableSlots, setAvailableSlots] = useState(slots);
   const [reservingSlots, setReservingSlots] = useState(new Set());
   const [completedSlots, setCompletedSlots] = useState(new Set());
@@ -127,8 +129,41 @@ function AvailableSlots({ slots, onSelectSlot }) {
     );
   };
 
+  // Handle calendar toggle
+  const handleCalendarClick = () => {
+    setShowCalendar(true);
+  };
+
+  const handleBackToList = () => {
+    setShowCalendar(false);
+  };
+
+  // If calendar view is active, show calendar component
+  if (showCalendar) {
+    return (
+      <CalendarAvailableSpots 
+        slots={slots} 
+        onSelectSlot={onSelectSlot}
+        onBackToList={handleBackToList}
+      />
+    );
+  }
+
   return (
-    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-6 text-white shadow-2xl w-full max-w-md">
+    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-6 text-white shadow-2xl w-full max-w-md relative">
+      {/* Calendar Button - Top Right Corner */}
+      <button
+        onClick={handleCalendarClick}
+        className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-600/40 transition-all duration-200 hover:scale-110"
+      >
+        <img 
+          src="./images/calendar.svg"
+          alt="Calendar"
+          className="w-4 h-4"
+          style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(6%) saturate(459%) hue-rotate(167deg) brightness(91%) contrast(89%)' }}
+        />
+      </button>
+
       <h3 className="text-lg font-medium mb-4 text-center text-slate-200">Reserve</h3>
       <div className="space-y-3">
         {availableSlots
