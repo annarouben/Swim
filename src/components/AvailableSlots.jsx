@@ -150,7 +150,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
   }
 
   return (
-    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-6 text-white shadow-2xl w-full max-w-md relative">
+    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-md relative">
       {/* Calendar Button - Top Right Corner */}
       <button
         onClick={handleCalendarClick}

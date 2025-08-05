@@ -327,7 +327,7 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
   const selectedSlots = getSlotsForDate(selectedDate);
 
   return (
-    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-6 text-white shadow-2xl w-full max-w-md relative">
+    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-md relative">
       {/* Back Button - Top Left Corner */}
       <button
         onClick={onBackToList}
@@ -373,7 +373,7 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
                 }
               }}
               className={`
-                p-2 rounded-lg transition-all duration-200 text-center
+                p-2 rounded-lg transition-all duration-200 text-center flex flex-col items-center justify-center
                 ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-slate-700/40'}
                 ${isSelected ? 'bg-[#A8F5E0]/20 ring-1 ring-[#A8F5E0]' : ''}
               `}

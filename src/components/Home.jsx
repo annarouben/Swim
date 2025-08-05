@@ -123,7 +123,7 @@ function Home() {
       </video>
 
       {/* Reservation Content */}
-      <div className="relative z-10 flex flex-col items-center pt-10 pb-10 px-3 min-h-screen">
+      <div className="relative z-10 flex flex-col items-center pt-10 pb-10 px-1.5 sm:px-3 min-h-screen">
         <CurrentReservation 
           reservations={reservations} 
           onCancelReservation={handleCancelReservation}
