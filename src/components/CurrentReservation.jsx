@@ -67,7 +67,7 @@ function CurrentReservation({ reservations = [], onCancelReservation }) {
   // Handle empty reservations
   if (!reservations || reservations.length === 0) {
     return (
-      <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-3 sm:p-6 mb-8 text-center text-white shadow-2xl w-full max-w-lg">
+      <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-3 sm:p-6 mb-8 text-center text-white shadow-2xl w-full max-w-none sm:max-w-lg mx-1 sm:mx-0">
         <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservations</h2>
         <div className="text-slate-400">No upcoming reservations</div>
       </div>
@@ -163,7 +163,7 @@ function CurrentReservation({ reservations = [], onCancelReservation }) {
 
   return (
     <div 
-      className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-3 sm:p-6 mb-8 text-center text-white shadow-2xl relative w-full max-w-lg"
+      className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-3 sm:p-6 mb-8 text-center text-white shadow-2xl relative w-full max-w-none sm:max-w-lg mx-1 sm:mx-0"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}

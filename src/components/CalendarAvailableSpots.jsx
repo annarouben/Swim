@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 
 function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [currentWeekOffset, setCurrentWeekOffset] = useState(0); // 0 = current week, 1 = next week
   const slotsContainerRef = useRef(null);
   const dateSlotRefs = useRef({});
   const [availableSlots, setAvailableSlots] = useState(slots);
@@ -9,6 +10,31 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
   const [completedSlots, setCompletedSlots] = useState(new Set());
   const [isScrolling, setIsScrolling] = useState(false);
   const [manualDateSelection, setManualDateSelection] = useState(false);
+  const [weekTouchStart, setWeekTouchStart] = useState(null);
+  const [weekTouchEnd, setWeekTouchEnd] = useState(null);
+
+  // Minimum swipe distance for week navigation
+  const minWeekSwipeDistance = 50;
+
+  // Update selected date when week changes to show slots for the new week
+  useEffect(() => {
+    const newWeek = getCurrentWeek();
+    const today = new Date();
+    
+    // If we're viewing current week and today is in this week, select today
+    if (currentWeekOffset === 0) {
+      const todayInWeek = newWeek.find(date => date.toDateString() === today.toDateString());
+      if (todayInWeek) {
+        setSelectedDate(todayInWeek);
+      } else {
+        // Select first available day in current week
+        setSelectedDate(newWeek[0]);
+      }
+    } else {
+      // For future weeks, select the first day of the week
+      setSelectedDate(newWeek[0]);
+    }
+  }, [currentWeekOffset]);
 
   // Helper function to check if lane is shared
   const isSharedLane = (lane) => lane === 1 || lane === 4;
@@ -195,11 +221,11 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
     );
   };
 
-  // Get current week data
+  // Get current week data based on offset
   const getCurrentWeek = () => {
     const today = new Date();
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
+    startOfWeek.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
     
     const week = [];
     for (let i = 0; i < 7; i++) {
@@ -209,6 +235,44 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
     }
     
     return week;
+  };
+
+  // Navigate to previous week
+  const goToPreviousWeek = () => {
+    if (currentWeekOffset > 0) {
+      setCurrentWeekOffset(currentWeekOffset - 1);
+    }
+  };
+
+  // Navigate to next week
+  const goToNextWeek = () => {
+    if (currentWeekOffset < 1) { // Limit to 2 weeks ahead (0 = current week, 1 = next week)
+      setCurrentWeekOffset(currentWeekOffset + 1);
+    }
+  };
+
+  // Week swipe gesture handlers
+  const onWeekTouchStart = (e) => {
+    setWeekTouchEnd(null);
+    setWeekTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onWeekTouchMove = (e) => setWeekTouchEnd(e.targetTouches[0].clientX);
+
+  const onWeekTouchEnd = () => {
+    if (!weekTouchStart || !weekTouchEnd) return;
+    const distance = weekTouchStart - weekTouchEnd;
+    const isLeftSwipe = distance > minWeekSwipeDistance;
+    const isRightSwipe = distance < -minWeekSwipeDistance;
+
+    if (isLeftSwipe && currentWeekOffset < 1) {
+      // Swipe left to go to next week
+      goToNextWeek();
+    }
+    if (isRightSwipe && currentWeekOffset > 0) {
+      // Swipe right to go to previous week
+      goToPreviousWeek();
+    }
   };
 
   // Get slots for a specific date
@@ -327,28 +391,42 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
   const selectedSlots = getSlotsForDate(selectedDate);
 
   return (
-    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-md relative">
-      {/* Back Button - Top Left Corner */}
-      <button
-        onClick={onBackToList}
-        className="absolute top-4 left-4 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-600/40 transition-all duration-200 hover:scale-110"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-
-      <h3 className="text-lg font-medium mb-2 text-center text-slate-200">Reserve</h3>
-      
-      {/* Current Month Display */}
-      <div className="text-center mb-4">
-        <div className="text-sm text-slate-300 font-medium">
-          {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-        </div>
+    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-none sm:max-w-md relative mx-1 sm:mx-0">
+      {/* View Toggle - Top Left Corner */}
+      <div className="absolute top-4 left-4 flex bg-slate-700/50 rounded-lg p-1">
+        <button
+          onClick={onBackToList}
+          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 bg-slate-600/80 text-slate-200"
+        >
+          <img 
+            src="./images/list.svg"
+            alt="List View"
+            className="w-4 h-4"
+            style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(6%) saturate(459%) hue-rotate(167deg) brightness(91%) contrast(89%)' }}
+          />
+        </button>
+        <button
+          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 bg-[#A8F5E0]/20 text-[#A8F5E0]"
+          disabled
+        >
+          <img 
+            src="./images/calendar.svg"
+            alt="Calendar View"
+            className="w-4 h-4"
+            style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(89%) saturate(1180%) hue-rotate(104deg) brightness(106%) contrast(89%)' }}
+          />
+        </button>
       </div>
 
-      {/* Week View */}
-      <div className="grid grid-cols-7 gap-1 mb-6">
+      <h3 className="text-lg font-medium mb-6 text-center text-slate-200">Reserve</h3>
+      
+      {/* Week View - Swipeable */}
+      <div 
+        className="grid grid-cols-7 gap-1 mb-6"
+        onTouchStart={onWeekTouchStart}
+        onTouchMove={onWeekTouchMove}
+        onTouchEnd={onWeekTouchEnd}
+      >
         {currentWeek.map((date, index) => {
           const isToday = date.toDateString() === today.toDateString();
           const isSelected = date.toDateString() === selectedDate.toDateString();

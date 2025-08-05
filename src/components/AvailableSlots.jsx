@@ -150,21 +150,34 @@ function AvailableSlots({ slots, onSelectSlot }) {
   }
 
   return (
-    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-md relative">
-      {/* Calendar Button - Top Right Corner */}
-      <button
-        onClick={handleCalendarClick}
-        className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-600/40 transition-all duration-200 hover:scale-110"
-      >
-        <img 
-          src="./images/calendar.svg"
-          alt="Calendar"
-          className="w-4 h-4"
-          style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(6%) saturate(459%) hue-rotate(167deg) brightness(91%) contrast(89%)' }}
-        />
-      </button>
+    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-none sm:max-w-md relative mx-1 sm:mx-0">
+      {/* View Toggle - Top Left Corner */}
+      <div className="absolute top-4 left-4 flex bg-slate-700/50 rounded-lg p-1">
+        <button
+          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 bg-[#A8F5E0]/20 text-[#A8F5E0]"
+          disabled
+        >
+          <img 
+            src="./images/list.svg"
+            alt="List View"
+            className="w-4 h-4"
+            style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(89%) saturate(1180%) hue-rotate(104deg) brightness(106%) contrast(89%)' }}
+          />
+        </button>
+        <button
+          onClick={handleCalendarClick}
+          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 hover:bg-slate-600/80 text-slate-200"
+        >
+          <img 
+            src="./images/calendar.svg"
+            alt="Calendar View"
+            className="w-4 h-4"
+            style={{ filter: 'brightness(0) saturate(100%) invert(85%) sepia(6%) saturate(459%) hue-rotate(167deg) brightness(91%) contrast(89%)' }}
+          />
+        </button>
+      </div>
 
-      <h3 className="text-lg font-medium mb-4 text-center text-slate-200">Reserve</h3>
+      <h3 className="text-lg font-medium mb-6 text-center text-slate-200">Reserve</h3>
       <div className="space-y-3">
         {availableSlots
           .filter((_, index) => !completedSlots.has(index))
