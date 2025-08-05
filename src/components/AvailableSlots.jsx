@@ -154,7 +154,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
       {/* View Toggle - Top Left Corner */}
       <div className="absolute top-4 left-4 flex bg-slate-700/50 rounded-lg p-1">
         <button
-          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 bg-[#A8F5E0]/20 text-[#A8F5E0]"
+          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 text-[#A8F5E0]"
           disabled
         >
           <img 
@@ -166,7 +166,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
         </button>
         <button
           onClick={handleCalendarClick}
-          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 hover:bg-slate-600/80 text-slate-200"
+          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 bg-slate-600/80 text-slate-200"
         >
           <img 
             src="./images/calendar.svg"

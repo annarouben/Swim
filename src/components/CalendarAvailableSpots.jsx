@@ -406,7 +406,7 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
           />
         </button>
         <button
-          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 bg-[#A8F5E0]/20 text-[#A8F5E0]"
+          className="flex items-center justify-center w-8 h-6 rounded-md transition-all duration-200 text-[#A8F5E0]"
           disabled
         >
           <img 
