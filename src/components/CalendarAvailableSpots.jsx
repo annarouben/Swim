@@ -627,7 +627,7 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList, reservation
                                 />
                               </svg>
                             </div>
-                            <div className="text-lg font-semibold text-white">
+                            <div className="text-sm sm:text-lg font-semibold text-white">
                               Added to your reservations
                             </div>
                           </div>
