@@ -4,6 +4,7 @@ import AvailableSlots from './AvailableSlots'
 
 function Home() {
   const videoRef = useRef(null)
+  const reservationsRef = useRef(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
   // Generate dynamic reservations
   const generateReservations = () => {
@@ -190,11 +191,16 @@ function Home() {
       {/* Reservation Content */}
       <div className="relative z-10 flex flex-col items-center pt-10 pb-10 px-0 sm:px-3 min-h-screen">
         <CurrentReservation 
+          ref={reservationsRef}
           reservations={reservations} 
           onCancelReservation={handleCancelReservation}
         />
         <div className="flex-1 w-full max-w-none sm:max-w-md mx-1 sm:mx-0">
-          <AvailableSlots slots={availableSlots} onSelectSlot={handleSelectSlot} />
+          <AvailableSlots 
+            slots={availableSlots} 
+            onSelectSlot={handleSelectSlot} 
+            reservationsRef={reservationsRef}
+          />
         </div>
       </div>
     </div>

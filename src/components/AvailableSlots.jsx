@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import CalendarAvailableSpots from './CalendarAvailableSpots';
 
-function AvailableSlots({ slots, onSelectSlot }) {
+function AvailableSlots({ slots, onSelectSlot, reservationsRef }) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [availableSlots, setAvailableSlots] = useState(slots);
   const [reservingSlots, setReservingSlots] = useState(new Set());
   const [completedSlots, setCompletedSlots] = useState(new Set());
+  const [activeBubbles, setActiveBubbles] = useState([]);
   const isSharedLane = (lane) => lane === 1 || lane === 4;
 
   // Helper function to check if time is in the evening
@@ -75,9 +77,38 @@ function AvailableSlots({ slots, onSelectSlot }) {
     };
   };
 
-  const handleReserve = (slot, index) => {
+  const handleReserve = (slot, index, event) => {
     // Start reservation animation
     setReservingSlots(prev => new Set(prev).add(index));
+    
+    // Get the position of the clicked slot button
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    const startY = buttonRect.top + buttonRect.height / 2; // Middle of the button
+    
+    // Calculate target position based on reservations area
+    let targetY = startY - 300; // Default fallback
+    if (reservationsRef?.current) {
+      const reservationsRect = reservationsRef.current.getBoundingClientRect();
+      targetY = reservationsRect.top + reservationsRect.height / 2; // Middle of reservations area
+    }
+    
+    // Create bubble animation
+    const bubbleId = Date.now() + Math.random();
+    const newBubble = {
+      id: bubbleId,
+      time: slot.time,
+      lane: slot.lane,
+      slotIndex: index,
+      startY: startY, // Store the starting Y position
+      targetY: targetY, // Store the target Y position
+    };
+    
+    setActiveBubbles(prev => [...prev, newBubble]);
+    
+    // Remove bubble after animation completes
+    setTimeout(() => {
+      setActiveBubbles(prev => prev.filter(bubble => bubble.id !== bubbleId));
+    }, 3000);
     
     // After 1.5s, mark as completed and remove
     setTimeout(() => {
@@ -145,12 +176,50 @@ function AvailableSlots({ slots, onSelectSlot }) {
         slots={slots} 
         onSelectSlot={onSelectSlot}
         onBackToList={handleBackToList}
+        reservationsRef={reservationsRef}
       />
     );
   }
 
   return (
     <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-none sm:max-w-md relative mx-1 sm:mx-0 flex flex-col h-full">
+      {/* Floating Bubbles - Using Portal */}
+      {activeBubbles.length > 0 && createPortal(
+        <div>
+          {activeBubbles.map((bubble) => (
+            <div
+              key={bubble.id}
+              className="fixed inset-0 pointer-events-none"
+              style={{
+                zIndex: 9999,
+              }}
+            >
+              <div 
+                className="absolute"
+                style={{
+                  left: '50%',
+                  top: `${bubble.startY}px`, // Start from the clicked slot position
+                  transform: 'translateX(-50%)',
+                  animation: `bubble-float-to-target 3s ease-out forwards`,
+                  '--start-y': `${bubble.startY}px`,
+                  '--target-y': `${bubble.targetY}px`,
+                }}
+              >
+                <div className="bg-gradient-to-br from-[#A8F5E0]/90 to-[#95E6D3]/70 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg animate-bubble-wobble border border-white/30">
+                  <div className="text-xs font-medium text-slate-800 whitespace-nowrap flex items-center space-x-2">
+                    <span>🫧</span>
+                    <span>{bubble.time}</span>
+                    <span className="text-slate-600">•</span>
+                    <span>Lane {bubble.lane}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>,
+        document.body
+      )}
+
       {/* View Toggle - Top Left Corner */}
       <div className="absolute top-4 left-4 flex bg-slate-700/50 rounded-lg p-1">
         <button
@@ -205,7 +274,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
                 )}
                 
                 <button 
-                  onClick={() => !isReserving && handleReserve(slot, originalIndex)}
+                  onClick={(event) => !isReserving && handleReserve(slot, originalIndex, event)}
                   disabled={isReserving}
                   className={`w-full bg-slate-800/50 hover:bg-slate-800/70 rounded-xl px-6 py-4 text-left transition-all duration-300 border border-slate-700/50 hover:border-slate-600/70 shadow-md ring-1 ring-white/5 ${
                     isReserving 
@@ -232,7 +301,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
                         </svg>
                       </div>
                       <div className="text-lg font-semibold text-white">
-                        Reserved
+                        Added to your reservations
                       </div>
                     </div>
                   ) : (

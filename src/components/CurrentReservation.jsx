@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 
-function CurrentReservation({ reservations = [], onCancelReservation }) {
+const CurrentReservation = forwardRef(({ reservations = [], onCancelReservation }, ref) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -163,6 +163,7 @@ function CurrentReservation({ reservations = [], onCancelReservation }) {
 
   return (
     <div 
+      ref={ref}
       className="bg-gradient-to-b from-slate-900/60 to-slate-800/40 backdrop-blur-md rounded-2xl p-3 sm:p-6 mb-8 text-center text-white shadow-2xl relative w-full max-w-none sm:max-w-lg mx-1 sm:mx-0"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
@@ -292,6 +293,6 @@ function CurrentReservation({ reservations = [], onCancelReservation }) {
       )}
     </div>
   );
-}
+});
 
 export default CurrentReservation;
