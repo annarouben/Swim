@@ -138,7 +138,8 @@ function Home() {
 
   const handleSelectSlot = (slot) => {
     console.log('Selected slot:', slot)
-    // Handle reservation logic here
+    // Add the new reservation to the existing reservations
+    setReservations(prev => [...prev, slot])
   }
 
   const handleCancelReservation = (reservation, index) => {

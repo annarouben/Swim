@@ -401,6 +401,17 @@ body::before {
   }
 }
 
+/* Badge count animation */
+@keyframes badge-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-badge-update {
+  animation: badge-bounce 0.3s ease-out;
+}
+
 .animate-bubble-float-to-target {
   animation: bubble-float-to-target 2s ease-out forwards;
 }

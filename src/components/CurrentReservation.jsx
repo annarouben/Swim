@@ -7,6 +7,20 @@ const CurrentReservation = forwardRef(({ reservations = [], onCancelReservation 
   const [touchEnd, setTouchEnd] = useState(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [reservationToCancel, setReservationToCancel] = useState(null);
+  const [badgeAnimated, setBadgeAnimated] = useState(false);
+  const [previousCount, setPreviousCount] = useState(reservations.length);
+
+  // Animate badge when reservation count increases
+  useEffect(() => {
+    if (reservations.length > previousCount) {
+      setBadgeAnimated(true);
+      const timer = setTimeout(() => setBadgeAnimated(false), 300);
+      setPreviousCount(reservations.length);
+      return () => clearTimeout(timer);
+    } else if (reservations.length !== previousCount) {
+      setPreviousCount(reservations.length);
+    }
+  }, [reservations.length, previousCount]);
 
   const nextReservation = () => {
     if (currentIndex < reservations.length - 1) {
@@ -213,7 +227,14 @@ const CurrentReservation = forwardRef(({ reservations = [], onCancelReservation 
 
       {/* Content area with padding to avoid arrow overlap */}
       <div className="px-8">
-        <h2 className="text-lg font-medium mb-2 text-slate-200">Your Reservations</h2>
+        <div className="flex items-center justify-center space-x-2 mb-2">
+          <h2 className="text-lg font-medium text-slate-200">Your Reservations</h2>
+          <span className={`bg-slate-700/60 text-slate-300 text-xs font-medium px-2 py-1 rounded-full min-w-[20px] text-center transition-all duration-300 border border-slate-600/30 ${
+            badgeAnimated ? 'animate-badge-update' : ''
+          }`}>
+            {reservations.length}
+          </span>
+        </div>
 
         {formatTimeWithIcon(currentReservation.time)}
         <div className="text-xl sm:text-2xl font-semibold text-slate-100 mb-3 whitespace-nowrap">Lane {currentReservation.lane}</div>
