@@ -5,11 +5,27 @@ import AvailableSlots from './AvailableSlots'
 function Home() {
   const videoRef = useRef(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
-  const [reservations, setReservations] = useState([
-    { time: '2:30 PM', date: 'Today, Aug 5', lane: 3 },
-    { time: '7:00 AM', date: 'Wed, Aug 7', lane: 1 },
-    { time: '6:30 PM', date: 'Fri, Aug 9', lane: 4 }
-  ])
+  // Generate dynamic reservations
+  const generateReservations = () => {
+    const today = new Date();
+    const todayStr = `Today, ${today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+    
+    const wed = new Date(today);
+    wed.setDate(today.getDate() + 2);
+    const wedStr = wed.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    
+    const fri = new Date(today);
+    fri.setDate(today.getDate() + 4);
+    const friStr = fri.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    
+    return [
+      { time: '2:30 PM', date: todayStr, lane: 3 },
+      { time: '7:00 AM', date: wedStr, lane: 1 },
+      { time: '6:30 PM', date: friStr, lane: 4 }
+    ];
+  };
+
+  const [reservations, setReservations] = useState(generateReservations())
 
   useEffect(() => {
     const video = videoRef.current
@@ -24,51 +40,100 @@ function Home() {
     }
   }, [])
 
-  const availableSlots = [
-    // Today's slots
-    { time: '4:00 PM', date: 'Today, Aug 5', lane: 2 },
-    { time: '5:30 PM', date: 'Today, Aug 5', lane: 3 },
-    { time: '6:30 PM', date: 'Today, Aug 5', lane: 1 },
-    { time: '8:00 PM', date: 'Today, Aug 5', lane: 4 },
+  // Generate dynamic available slots for two weeks starting from today
+  const generateAvailableSlots = () => {
+    const slots = [];
+    const today = new Date();
+    const twoWeeksFromToday = new Date(today);
+    twoWeeksFromToday.setDate(today.getDate() + 14);
     
-    // Tomorrow's slots
-    { time: '7:00 AM', date: 'Tomorrow, Aug 6', lane: 4 },
-    { time: '8:30 AM', date: 'Tomorrow, Aug 6', lane: 2 },
-    { time: '10:00 AM', date: 'Tomorrow, Aug 6', lane: 1 },
-    { time: '2:00 PM', date: 'Tomorrow, Aug 6', lane: 3 },
-    { time: '5:00 PM', date: 'Tomorrow, Aug 6', lane: 2 },
-    { time: '7:30 PM', date: 'Tomorrow, Aug 6', lane: 4 },
+    // Time slots available each day (in hours, 24-hour format)
+    const timeSlots = [
+      { hour: 6, minute: 0 },    // 6:00 AM
+      { hour: 7, minute: 30 },   // 7:30 AM
+      { hour: 8, minute: 30 },   // 8:30 AM
+      { hour: 9, minute: 0 },    // 9:00 AM
+      { hour: 10, minute: 30 },  // 10:30 AM
+      { hour: 11, minute: 30 },  // 11:30 AM
+      { hour: 12, minute: 0 },   // 12:00 PM
+      { hour: 13, minute: 0 },   // 1:00 PM
+      { hour: 13, minute: 30 },  // 1:30 PM
+      { hour: 15, minute: 30 },  // 3:30 PM
+      { hour: 16, minute: 0 },   // 4:00 PM
+      { hour: 16, minute: 30 },  // 4:30 PM
+      { hour: 17, minute: 0 },   // 5:00 PM
+      { hour: 17, minute: 30 },  // 5:30 PM
+      { hour: 18, minute: 0 },   // 6:00 PM
+      { hour: 18, minute: 30 },  // 6:30 PM
+      { hour: 19, minute: 30 },  // 7:30 PM
+      { hour: 20, minute: 0 },   // 8:00 PM
+      { hour: 20, minute: 30 }   // 8:30 PM
+    ];
     
-    // Day after tomorrow
-    { time: '6:00 AM', date: 'Wed, Aug 7', lane: 1 },
-    { time: '9:00 AM', date: 'Wed, Aug 7', lane: 3 },
-    { time: '11:30 AM', date: 'Wed, Aug 7', lane: 2 },
-    { time: '1:00 PM', date: 'Wed, Aug 7', lane: 4 },
-    { time: '4:30 PM', date: 'Wed, Aug 7', lane: 1 },
-    { time: '6:00 PM', date: 'Wed, Aug 7', lane: 3 },
+    const lanes = [1, 2, 3, 4];
     
-    // Thursday
-    { time: '6:30 AM', date: 'Thu, Aug 8', lane: 2 },
-    { time: '8:00 AM', date: 'Thu, Aug 8', lane: 4 },
-    { time: '12:00 PM', date: 'Thu, Aug 8', lane: 1 },
-    { time: '3:30 PM', date: 'Thu, Aug 8', lane: 3 },
-    { time: '5:30 PM', date: 'Thu, Aug 8', lane: 2 },
-    { time: '8:30 PM', date: 'Thu, Aug 8', lane: 4 },
+    // Generate slots for each day in the two-week period
+    for (let dayOffset = 0; dayOffset < 14; dayOffset++) {
+      const currentDate = new Date(today);
+      currentDate.setDate(today.getDate() + dayOffset);
+      
+      // Generate 4-6 random slots per day
+      const slotsPerDay = 4 + Math.floor(Math.random() * 3); // 4-6 slots
+      const selectedTimeSlots = [];
+      
+      // Randomly select time slots for this day
+      for (let i = 0; i < slotsPerDay; i++) {
+        let timeSlot;
+        do {
+          timeSlot = timeSlots[Math.floor(Math.random() * timeSlots.length)];
+        } while (selectedTimeSlots.some(slot => slot.hour === timeSlot.hour && slot.minute === timeSlot.minute));
+        selectedTimeSlots.push(timeSlot);
+      }
+      
+      // Sort time slots by time
+      selectedTimeSlots.sort((a, b) => {
+        if (a.hour !== b.hour) return a.hour - b.hour;
+        return a.minute - b.minute;
+      });
+      
+      // Create slot objects
+      selectedTimeSlots.forEach(timeSlot => {
+        const slotDate = new Date(currentDate);
+        slotDate.setHours(timeSlot.hour, timeSlot.minute, 0, 0);
+        
+        // Format date string
+        let dateString;
+        if (dayOffset === 0) {
+          dateString = `Today, ${slotDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+        } else if (dayOffset === 1) {
+          dateString = `Tomorrow, ${slotDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+        } else {
+          dateString = slotDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+        
+        // Format time string
+        const timeString = slotDate.toLocaleTimeString('en-US', { 
+          hour: 'numeric', 
+          minute: '2-digit', 
+          hour12: true 
+        });
+        
+        // Random lane
+        const randomLane = lanes[Math.floor(Math.random() * lanes.length)];
+        
+        slots.push({
+          time: timeString,
+          date: dateString,
+          lane: randomLane,
+          id: `${dayOffset}-${timeSlot.hour}-${timeSlot.minute}-${randomLane}`
+        });
+      });
+    }
     
-    // Friday
-    { time: '7:30 AM', date: 'Fri, Aug 9', lane: 1 },
-    { time: '10:30 AM', date: 'Fri, Aug 9', lane: 3 },
-    { time: '1:30 PM', date: 'Fri, Aug 9', lane: 2 },
-    { time: '4:00 PM', date: 'Fri, Aug 9', lane: 4 },
-    { time: '6:30 PM', date: 'Fri, Aug 9', lane: 1 },
-    
-    // Saturday  
-    { time: '6:00 AM', date: 'Sat, Aug 10', lane: 3 },
-    { time: '9:30 AM', date: 'Sat, Aug 10', lane: 2 },
-    { time: '12:30 PM', date: 'Sat, Aug 10', lane: 4 },
-    { time: '3:00 PM', date: 'Sat, Aug 10', lane: 1 },
-    { time: '7:00 PM', date: 'Sat, Aug 10', lane: 3 }
-  ]
+    return slots;
+  };
+
+  const availableSlots = generateAvailableSlots()
 
   const handleSelectSlot = (slot) => {
     console.log('Selected slot:', slot)

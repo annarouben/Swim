@@ -420,8 +420,8 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
 
       <h3 className="text-lg font-medium mb-6 text-center text-slate-200">Reserve</h3>
       
-      {/* Sticky Week View - Swipeable */}
-      <div className="sticky top-0 bg-gradient-to-b from-slate-900/40 to-slate-800/20 backdrop-blur-sm rounded-xl p-3 mb-4 z-10">
+      {/* Week View - Swipeable */}
+      <div className="mb-6">
         <div 
           className="grid grid-cols-7 gap-1"
           onTouchStart={onWeekTouchStart}
@@ -495,7 +495,8 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
       {/* Scrollable Slots Container */}
       <div 
         ref={slotsContainerRef}
-        className="space-y-3 flex-1 overflow-y-auto"
+        className="space-y-3 flex-1 overflow-y-auto min-h-0"
+        style={{ maxHeight: 'calc(100vh - 200px)' }}
       >
         {Object.keys(groupedSlots).map((dateKey, dateIndex) => {
           const slotsForDate = groupedSlots[dateKey];
