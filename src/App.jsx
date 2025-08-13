@@ -1,18 +1,24 @@
 import { useState } from 'react';
 import './App.css'
-import Home from './components/Home'
 import SplashScreen from './components/SplashScreen'
+import ReservationsView from './components/ReservationsView'
+import SwimPlanView from './components/SwimPlanView'
+import BottomNavigation from './components/BottomNavigation'
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
-  const [homeVisible, setHomeVisible] = useState(false);
+  const [appVisible, setAppVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState('reserve');
 
   const handleSplashComplete = () => {
     setShowSplash(false);
-    // Small delay to ensure smooth transition
     setTimeout(() => {
-      setHomeVisible(true);
+      setAppVisible(true);
     }, 100);
+  };
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
   };
 
   return (
@@ -30,8 +36,15 @@ function App() {
       
       {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
       {!showSplash && (
-        <div className={`transition-opacity duration-500 ${homeVisible ? 'opacity-100' : 'opacity-0'}`}>
-          <Home />
+        <div className={`transition-opacity duration-500 ${appVisible ? 'opacity-100' : 'opacity-0'}`}>
+          {/* Main Content Views */}
+          <div className="relative">
+            {activeTab === 'reserve' && <ReservationsView />}
+            {activeTab === 'plan' && <SwimPlanView />}
+          </div>
+          
+          {/* Bottom Navigation */}
+          <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
         </div>
       )}
     </div>
