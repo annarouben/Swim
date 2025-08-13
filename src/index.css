@@ -15,12 +15,13 @@ html, body {
 }
 
 body {
-  background-image: url('./images/water.jpg');
+  /* Use a blue-teal gradient as fallback that matches the water theme */
+  background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 50%, #0d9488 100%);
+  background-image: url('/Swim/images/water.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-color: #0f172a; /* Fallback color */
   position: relative;
 }
 
