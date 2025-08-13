@@ -386,63 +386,21 @@ body::before {
 }
 
 /* Water Bubble Animation */
-@keyframes bubble-float-up {
-  0% {
-    transform: translateY(0) scale(0);
-    opacity: 0;
-  }
-  10% {
-    transform: translateY(-10px) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-100px) scale(1.1) rotate(5deg);
-    opacity: 0.9;
-  }
-  80% {
-    transform: translateY(-200px) scale(1.05) rotate(-3deg);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(-300px) scale(0.8) rotate(0deg);
-    opacity: 0;
-  }
-}
-
 @keyframes bubble-float-to-target {
   0% {
     transform: translateY(0) scale(0);
     opacity: 0;
   }
-  10% {
+  15% {
     transform: translateY(-10px) scale(1);
     opacity: 1;
   }
-  50% {
-    transform: translateY(calc((var(--target-y) - var(--start-y)) * 0.3)) scale(1.1) rotate(5deg);
-    opacity: 0.9;
-  }
-  80% {
-    transform: translateY(calc((var(--target-y) - var(--start-y)) * 0.7)) scale(1.05) rotate(-3deg);
-    opacity: 0.7;
-  }
   100% {
-    transform: translateY(calc(var(--target-y) - var(--start-y))) scale(0.8) rotate(0deg);
+    transform: translateY(calc(var(--target-y) - var(--start-y))) scale(0.9);
     opacity: 0;
   }
 }
 
-@keyframes bubble-wobble {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(2deg) scale(1.02); }
-  50% { transform: rotate(0deg) scale(0.98); }
-  75% { transform: rotate(-2deg) scale(1.01); }
-}
-
-.animate-bubble-float-up {
-  animation: bubble-float-up 2s ease-out forwards;
-}
-
-.animate-bubble-wobble {
-  animation: bubble-wobble 0.8s ease-in-out infinite;
+.animate-bubble-float-to-target {
+  animation: bubble-float-to-target 2s ease-out forwards;
 }

@@ -435,17 +435,16 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList, reservation
               }}
             >
               <div 
-                className="absolute"
+                className="absolute animate-bubble-float-to-target"
                 style={{
                   left: '50%',
                   top: `${bubble.startY}px`, // Start from the clicked slot position
                   transform: 'translateX(-50%)',
-                  animation: `bubble-float-to-target 3s ease-out forwards`,
                   '--start-y': `${bubble.startY}px`,
                   '--target-y': `${bubble.targetY}px`,
                 }}
               >
-                <div className="bg-gradient-to-br from-[#A8F5E0]/90 to-[#95E6D3]/70 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg animate-bubble-wobble border border-white/30">
+                <div className="bg-gradient-to-br from-[#A8F5E0]/90 to-[#95E6D3]/70 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-white/30">
                   <div className="text-xs font-medium text-slate-800 whitespace-nowrap flex items-center space-x-2">
                     <span>🫧</span>
                     <span>{bubble.time}</span>
