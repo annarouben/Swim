@@ -150,7 +150,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
   }
 
   return (
-    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-none sm:max-w-md relative mx-1 sm:mx-0">
+    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-none sm:max-w-md relative mx-1 sm:mx-0 flex flex-col h-full">
       {/* View Toggle - Top Left Corner */}
       <div className="absolute top-4 left-4 flex bg-slate-700/50 rounded-lg p-1">
         <button
@@ -178,7 +178,7 @@ function AvailableSlots({ slots, onSelectSlot }) {
       </div>
 
       <h3 className="text-lg font-medium mb-6 text-center text-slate-200">Reserve</h3>
-      <div className="space-y-3">
+      <div className="space-y-3 flex-1 overflow-y-auto">
         {availableSlots
           .filter((_, index) => !completedSlots.has(index))
           .map((slot, filteredIndex) => {

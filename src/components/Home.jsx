@@ -128,7 +128,9 @@ function Home() {
           reservations={reservations} 
           onCancelReservation={handleCancelReservation}
         />
-        <AvailableSlots slots={availableSlots} onSelectSlot={handleSelectSlot} />
+        <div className="flex-1 w-full max-w-none sm:max-w-md mx-1 sm:mx-0">
+          <AvailableSlots slots={availableSlots} onSelectSlot={handleSelectSlot} />
+        </div>
       </div>
     </div>
   )

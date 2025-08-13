@@ -391,7 +391,7 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
   const selectedSlots = getSlotsForDate(selectedDate);
 
   return (
-    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-none sm:max-w-md relative mx-1 sm:mx-0">
+    <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-none sm:max-w-md relative mx-1 sm:mx-0 flex flex-col h-full">
       {/* View Toggle - Top Left Corner */}
       <div className="absolute top-4 left-4 flex bg-slate-700/50 rounded-lg p-1">
         <button
@@ -420,80 +420,82 @@ function CalendarAvailableSpots({ slots, onSelectSlot, onBackToList }) {
 
       <h3 className="text-lg font-medium mb-6 text-center text-slate-200">Reserve</h3>
       
-      {/* Week View - Swipeable */}
-      <div 
-        className="grid grid-cols-7 gap-1 mb-6"
-        onTouchStart={onWeekTouchStart}
-        onTouchMove={onWeekTouchMove}
-        onTouchEnd={onWeekTouchEnd}
-      >
-        {currentWeek.map((date, index) => {
-          const isToday = date.toDateString() === today.toDateString();
-          const isSelected = date.toDateString() === selectedDate.toDateString();
-          const isPastDate = date < today && !isToday;
-          const twoWeeksFromToday = new Date(today);
-          twoWeeksFromToday.setDate(today.getDate() + 14);
-          const isBeyondTwoWeeks = date > twoWeeksFromToday;
-          const isDisabled = isPastDate || isBeyondTwoWeeks;
-          const daySlots = getSlotsForDate(date);
-          const hasSlots = daySlots.length > 0;
-          
-          return (
-            <button
-              key={index}
-              onClick={() => {
-                if (!isDisabled) {
-                  setManualDateSelection(true);
-                  setSelectedDate(date);
-                  scrollToDate(date);
-                  // Clear the manual selection flag after a delay to allow scroll to complete
-                  setTimeout(() => setManualDateSelection(false), 1000);
-                }
-              }}
-              className={`
-                p-2 rounded-lg transition-all duration-200 text-center flex flex-col items-center justify-center
-                ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-slate-700/40'}
-                ${isSelected ? 'bg-[#A8F5E0]/20 ring-1 ring-[#A8F5E0]' : ''}
-              `}
-              disabled={isDisabled}
-            >
-              {/* Day name */}
-              <div className={`text-xs font-medium mb-1 ${
-                isDisabled ? 'text-slate-200/40' : 'text-slate-200'
-              }`}>
-                {dayNames[date.getDay()]}
-              </div>
-              
-              {/* Date number - fixed height container */}
-              <div className="h-6 flex items-center justify-center">
-                {isToday ? (
-                  <div className="w-6 h-6 bg-[#A8F5E0] rounded-full flex items-center justify-center text-slate-800 font-semibold text-sm">
-                    {date.getDate()}
-                  </div>
-                ) : (
-                  <div className={`text-sm font-medium ${
-                    isDisabled ? 'text-slate-200/40' : 'text-slate-200'
-                  }`}>
-                    {date.getDate()}
-                  </div>
-                )}
-              </div>
-              
-              {/* Slot indicator - fixed height to prevent layout shift */}
-              <div className="h-2 flex items-center justify-center mt-1">
-                {hasSlots && !isDisabled && (
-                  <div className="w-1 h-1 bg-[#A8F5E0] rounded-full"></div>
-                )}
-              </div>
-            </button>
-          );
-        })}
+      {/* Sticky Week View - Swipeable */}
+      <div className="sticky top-0 bg-gradient-to-b from-slate-900/40 to-slate-800/20 backdrop-blur-sm rounded-xl p-3 mb-4 z-10">
+        <div 
+          className="grid grid-cols-7 gap-1"
+          onTouchStart={onWeekTouchStart}
+          onTouchMove={onWeekTouchMove}
+          onTouchEnd={onWeekTouchEnd}
+        >
+          {currentWeek.map((date, index) => {
+            const isToday = date.toDateString() === today.toDateString();
+            const isSelected = date.toDateString() === selectedDate.toDateString();
+            const isPastDate = date < today && !isToday;
+            const twoWeeksFromToday = new Date(today);
+            twoWeeksFromToday.setDate(today.getDate() + 14);
+            const isBeyondTwoWeeks = date > twoWeeksFromToday;
+            const isDisabled = isPastDate || isBeyondTwoWeeks;
+            const daySlots = getSlotsForDate(date);
+            const hasSlots = daySlots.length > 0;
+            
+            return (
+              <button
+                key={index}
+                onClick={() => {
+                  if (!isDisabled) {
+                    setManualDateSelection(true);
+                    setSelectedDate(date);
+                    scrollToDate(date);
+                    // Clear the manual selection flag after a delay to allow scroll to complete
+                    setTimeout(() => setManualDateSelection(false), 1000);
+                  }
+                }}
+                className={`
+                  p-2 rounded-lg transition-all duration-200 text-center flex flex-col items-center justify-center
+                  ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-slate-700/40'}
+                  ${isSelected ? 'bg-[#A8F5E0]/20 ring-1 ring-[#A8F5E0]' : ''}
+                `}
+                disabled={isDisabled}
+              >
+                {/* Day name */}
+                <div className={`text-xs font-medium mb-1 ${
+                  isDisabled ? 'text-slate-200/40' : 'text-slate-200'
+                }`}>
+                  {dayNames[date.getDay()]}
+                </div>
+                
+                {/* Date number - fixed height container */}
+                <div className="h-6 flex items-center justify-center">
+                  {isToday ? (
+                    <div className="w-6 h-6 bg-[#A8F5E0] rounded-full flex items-center justify-center text-slate-800 font-semibold text-sm">
+                      {date.getDate()}
+                    </div>
+                  ) : (
+                    <div className={`text-sm font-medium ${
+                      isDisabled ? 'text-slate-200/40' : 'text-slate-200'
+                    }`}>
+                      {date.getDate()}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Slot indicator - fixed height to prevent layout shift */}
+                <div className="h-2 flex items-center justify-center mt-1">
+                  {hasSlots && !isDisabled && (
+                    <div className="w-1 h-1 bg-[#A8F5E0] rounded-full"></div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* All Slots by Date */}
+      {/* Scrollable Slots Container */}
       <div 
         ref={slotsContainerRef}
-        className="space-y-3 max-h-80 overflow-y-auto"
+        className="space-y-3 flex-1 overflow-y-auto"
       >
         {Object.keys(groupedSlots).map((dateKey, dateIndex) => {
           const slotsForDate = groupedSlots[dateKey];
