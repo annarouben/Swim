@@ -15,8 +15,26 @@ html, body {
 }
 
 body {
-  background-color: #0f172a; /* slate-900 background to match splash screen */
+  background-image: url('./images/water.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
+  background-color: #0f172a; /* Fallback color */
+  position: relative;
+}
+
+/* Add gradient overlay to body */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom right, rgba(30, 58, 138, 0.6), rgba(15, 23, 42, 0.7), rgba(13, 148, 136, 0.6));
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Splash Screen Animations */
