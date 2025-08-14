@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { CalendarDaysIcon } from '@heroicons/react/24/outline';
-import { CalendarDaysIcon as CalendarDaysSolidIcon } from '@heroicons/react/24/solid';
+import { CalendarDaysIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon as CalendarDaysSolidIcon, ChartBarIcon as ChartBarSolidIcon } from '@heroicons/react/24/solid';
 
 function BottomNavigation({ activeTab, onTabChange }) {
   const [isVisible, setIsVisible] = useState(true);
@@ -44,11 +44,19 @@ function BottomNavigation({ activeTab, onTabChange }) {
       description: 'Book pool time'
     },
     {
-      id: 'plan',
-      label: 'Workout',
+      id: 'swim',
+      label: 'Swim',
       type: 'svg',
-      iconSrc: './images/swimer.svg',
+      iconSrc: './images/noun-wave-5622627.svg',
       description: 'Swim workouts'
+    },
+    {
+      id: 'insights',
+      label: 'Insights',
+      type: 'heroicon',
+      OutlineIcon: ChartBarIcon,
+      SolidIcon: ChartBarSolidIcon,
+      description: 'Progress tracking'
     }
   ];
 

@@ -44,6 +44,19 @@ body::before {
   50% { transform: translateY(-10px) rotate(1deg); }
 }
 
+@keyframes spin-vertical {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(360deg);
+  }
+}
+
+.animate-spin-vertical {
+  animation: spin-vertical 2s linear forwards;
+}
+
 @keyframes float-once {
   0% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-15px) rotate(1deg); }
