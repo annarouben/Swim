@@ -1,10 +1,104 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
+import MiniWave from './MiniWave';
 
 function SwimPlanView() {
   const videoRef = useRef(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [shoulderPain, setShoulderPain] = useState(3); // 0-10 scale
+  const [isUpdatingWorkout, setIsUpdatingWorkout] = useState(false);
+  const [animatingCards, setAnimatingCards] = useState(new Set());
+
+  // Get workout routine based on pain level
+  const getWorkoutForPainLevel = (painLevel) => {
+    if (painLevel >= 7) {
+      // High pain: Only gentle movements
+      return {
+        title: "Gentle Recovery - 20 min",
+        intervals: [
+          {
+            id: 'gentle-breaststroke',
+            name: 'Gentle Breaststroke',
+            duration: 10,
+            icon: 'noun-breaststroke-243000.svg',
+            description: 'Very gentle breaststroke with minimal arm extension. Focus on leg movement and gentle arm gliding.'
+          },
+          {
+            id: 'water-walking',
+            name: 'Water Walking',
+            duration: 10,
+            icon: 'noun-wave-5622627.svg',
+            description: 'Gentle water walking and floating exercises to promote circulation without strain.'
+          }
+        ]
+      };
+    } else if (painLevel >= 4) {
+      // Medium pain: Current routine - breaststroke focus with modified freestyle
+      return {
+        title: "Modified Workout - 25 min",
+        intervals: [
+          {
+            id: 'breaststroke',
+            name: 'Breaststroke',
+            duration: 12,
+            icon: 'noun-breaststroke-243000.svg',
+            description: 'Start with gentle breaststroke sculling and gradually progress as tolerated.'
+          },
+          {
+            id: 'modified-freestyle',
+            name: 'Modified Freestyle',
+            duration: 8,
+            icon: 'noun-freestyle-243002.svg',
+            description: 'Shortened, controlled freestyle strokes. Avoid excessive arm extension and rotation.'
+          },
+          {
+            id: 'cooldown',
+            name: 'Cool Down',
+            duration: 5,
+            icon: 'noun-snowflake-7926919.svg',
+            description: 'Easy floating and gentle movements to help shoulder muscles relax.'
+          }
+        ]
+      };
+    } else {
+      // Low pain: Full intensity with all strokes
+      return {
+        title: "Full Intensity - 35 min",
+        intervals: [
+          {
+            id: 'butterfly',
+            name: 'Butterfly',
+            duration: 10,
+            icon: 'noun-butterfly-stroke-242995.svg',
+            description: 'Full butterfly strokes to build shoulder strength and endurance.'
+          },
+          {
+            id: 'freestyle',
+            name: 'Freestyle',
+            duration: 15,
+            icon: 'noun-freestyle-243002.svg',
+            description: 'High-intensity freestyle with full range of motion and bilateral breathing.'
+          },
+          {
+            id: 'backstroke',
+            name: 'Backstroke',
+            duration: 7,
+            icon: 'noun-backstroke-242997.svg',
+            description: 'Full backstroke to work opposing muscle groups and improve flexibility.'
+          },
+          {
+            id: 'cooldown',
+            name: 'Cool Down',
+            duration: 3,
+            icon: 'noun-snowflake-7926919.svg',
+            description: 'Brief cool down with easy breaststroke and stretching.'
+          }
+        ]
+      };
+    }
+  };
+
+  const currentWorkout = getWorkoutForPainLevel(shoulderPain);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -15,6 +109,44 @@ function SwimPlanView() {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  // Handle workout update animation when pain level changes
+  const handlePainLevelChange = (newPainLevel) => {
+    setShoulderPain(newPainLevel);
+    
+    // Debounce the animation trigger
+    clearTimeout(window.workoutUpdateTimeout);
+    window.workoutUpdateTimeout = setTimeout(() => {
+      triggerWorkoutUpdateAnimation();
+    }, 500); // Wait 500ms after user stops adjusting
+  };
+
+  const triggerWorkoutUpdateAnimation = () => {
+    setIsUpdatingWorkout(true);
+    
+    // Get current workout intervals for dynamic animation
+    const intervals = currentWorkout.intervals;
+    
+    intervals.forEach((interval, index) => {
+      setTimeout(() => {
+        setAnimatingCards(prev => new Set([...prev, interval.id]));
+        
+        // Remove animation after it completes
+        setTimeout(() => {
+          setAnimatingCards(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(interval.id);
+            return newSet;
+          });
+        }, 400); // Animation duration
+      }, index * 200); // Stagger by 200ms
+    });
+    
+    // Complete the update process
+    setTimeout(() => {
+      setIsUpdatingWorkout(false);
+    }, intervals.length * 200 + 400); // Total duration
+  };
 
   return (
     <div className="min-h-screen relative">
@@ -51,7 +183,7 @@ function SwimPlanView() {
               <div className="flex flex-col items-center">
                 {/* Up Button */}
                 <button
-                  onClick={() => setShoulderPain(prev => Math.min(10, prev + 1))}
+                  onClick={() => handlePainLevelChange(Math.min(10, shoulderPain + 1))}
                   disabled={shoulderPain === 10}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
                 >
@@ -64,7 +196,7 @@ function SwimPlanView() {
                   onWheel={(e) => {
                     e.preventDefault();
                     const delta = e.deltaY > 0 ? -1 : 1; // Scroll down decreases, scroll up increases
-                    setShoulderPain(prev => Math.max(0, Math.min(10, prev + delta)));
+                    handlePainLevelChange(Math.max(0, Math.min(10, shoulderPain + delta)));
                   }}
                   style={{ touchAction: 'none' }}
                   onTouchStart={(e) => {
@@ -80,7 +212,7 @@ function SwimPlanView() {
                       const deltaY = touch.clientY - startY;
                       const delta = Math.round(deltaY / 15); // Touch sensitivity - made more sensitive
                       const newValue = Math.max(0, Math.min(10, startValue - delta)); // Up increases, down decreases
-                      setShoulderPain(newValue);
+                      handlePainLevelChange(newValue);
                     };
                     
                     const handleTouchEnd = () => {
@@ -101,7 +233,7 @@ function SwimPlanView() {
                       const deltaY = moveEvent.clientY - startY;
                       const delta = Math.round(deltaY / 10); // Mouse sensitivity
                       const newValue = Math.max(0, Math.min(10, startValue - delta)); // Up increases, down decreases
-                      setShoulderPain(newValue);
+                      handlePainLevelChange(newValue);
                     };
                     
                     const handleMouseUp = () => {
@@ -120,7 +252,7 @@ function SwimPlanView() {
                 
                 {/* Down Button */}
                 <button
-                  onClick={() => setShoulderPain(prev => Math.max(0, prev - 1))}
+                  onClick={() => handlePainLevelChange(Math.max(0, shoulderPain - 1))}
                   disabled={shoulderPain === 0}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
                 >
@@ -137,106 +269,50 @@ function SwimPlanView() {
           </div>
           {/* Workout Section */}
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-slate-200 mb-3">Workout 30 min</h4>
+            <div className="flex items-center gap-2 mb-3">
+              <h4 className="text-sm font-medium text-slate-200">{currentWorkout.title}</h4>
+              {/* Mini wave animation during workout update */}
+              {isUpdatingWorkout && <MiniWave />}
+            </div>
             
-            {/* Interval 1 - Breaststroke */}
-            <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-              <div className="flex gap-4">
-                {/* Left Column - Icon */}
-                <div className="flex flex-col items-center justify-start flex-shrink-0">
-                  {/* Icon with subtle background circle */}
-                  <div className="relative">
-                    <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
-                      <div 
-                        className="w-10 h-10"
-                        style={{
-                          WebkitMask: 'url(./images/noun-breaststroke-243000.svg) no-repeat center / contain',
-                          mask: 'url(./images/noun-breaststroke-243000.svg) no-repeat center / contain',
-                          backgroundColor: 'currentColor'
-                        }}
-                      />
+            {/* Dynamic Workout Intervals */}
+            {currentWorkout.intervals.map((interval, index) => (
+              <div key={interval.id} className={`bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 transition-all duration-400 ${
+                animatingCards.has(interval.id) 
+                  ? 'scale-105 bg-slate-700/60 shadow-lg shadow-[#A8F5E0]/10' 
+                  : 'scale-100'
+              }`}>
+                <div className="flex gap-4">
+                  {/* Left Column - Icon */}
+                  <div className="flex flex-col items-center justify-start flex-shrink-0">
+                    {/* Icon with subtle background circle */}
+                    <div className="relative">
+                      <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
+                        <div 
+                          className="w-10 h-10"
+                          style={{
+                            WebkitMask: `url(./images/${interval.icon}) no-repeat center / contain`,
+                            mask: `url(./images/${interval.icon}) no-repeat center / contain`,
+                            backgroundColor: 'currentColor'
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                {/* Right Column - Time + Title + Description */}
-                <div className="flex-1 pt-1">
-                  <h5 className="font-medium text-slate-200 mb-2 text-left">
-                    <span className="text-[#A8F5E0] font-bold text-base mr-2">15 min</span>
-                    Breaststroke
-                  </h5>
-                  <p className="text-sm text-slate-300 leading-normal text-left">
-                    Start with gentle breaststroke sculling and gradually progress to breaststroke as tolerated
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Interval 2 - Freestyle */}
-            <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-              <div className="flex gap-4">
-                {/* Left Column - Icon */}
-                <div className="flex flex-col items-center justify-start flex-shrink-0">
-                  {/* Icon with subtle background circle */}
-                  <div className="relative">
-                    <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
-                      <div 
-                        className="w-10 h-10"
-                        style={{
-                          WebkitMask: 'url(./images/noun-freestyle-243002.svg) no-repeat center / contain',
-                          mask: 'url(./images/noun-freestyle-243002.svg) no-repeat center / contain',
-                          backgroundColor: 'currentColor'
-                        }}
-                      />
-                    </div>
+                  
+                  {/* Right Column - Time + Title + Description */}
+                  <div className="flex-1 pt-1">
+                    <h5 className="font-medium text-slate-200 mb-2 text-left">
+                      <span className="text-[#A8F5E0] font-bold text-base mr-2">{interval.duration} min</span>
+                      {interval.name}
+                    </h5>
+                    <p className="text-sm text-slate-300 leading-normal text-left">
+                      {interval.description}
+                    </p>
                   </div>
                 </div>
-                
-                {/* Right Column - Time + Title + Description */}
-                <div className="flex-1 pt-1">
-                  <h5 className="font-medium text-slate-200 mb-2 text-left">
-                    <span className="text-[#A8F5E0] font-bold text-base mr-2">10 min</span>
-                    Freestyle
-                  </h5>
-                  <p className="text-sm text-slate-300 leading-normal text-left">
-                    Consider a modified freestyle with a shorter, more controlled stroke, avoiding excessive arm extension and rotation.
-                  </p>
-                </div>
               </div>
-            </div>
-
-            {/* Interval 3 - Cool Down */}
-            <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-              <div className="flex gap-4">
-                {/* Left Column - Icon */}
-                <div className="flex flex-col items-center justify-start flex-shrink-0">
-                  {/* Icon with subtle background circle - using snowflake for cool down */}
-                  <div className="relative">
-                    <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
-                      <div 
-                        className="w-10 h-10"
-                        style={{
-                          WebkitMask: 'url(./images/noun-snowflake-7926919.svg) no-repeat center / contain',
-                          mask: 'url(./images/noun-snowflake-7926919.svg) no-repeat center / contain',
-                          backgroundColor: 'currentColor'
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Right Column - Time + Title + Description */}
-                <div className="flex-1 pt-1">
-                  <h5 className="font-medium text-slate-200 mb-2 text-left">
-                    <span className="text-[#A8F5E0] font-bold text-base mr-2">5 min</span>
-                    Cool Down
-                  </h5>
-                  <p className="text-sm text-slate-300 leading-normal text-left">
-                    Easy backstroke or gentle floating to help your shoulder muscles relax
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
         </div>
