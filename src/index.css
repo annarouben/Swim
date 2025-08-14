@@ -46,10 +46,10 @@ body::before {
 
 @keyframes spin-vertical {
   from {
-    transform: rotateX(0deg);
+    transform: rotateX(0deg) rotateZ(0deg);
   }
   to {
-    transform: rotateX(360deg);
+    transform: rotateX(360deg) rotateZ(60deg);
   }
 }
 
