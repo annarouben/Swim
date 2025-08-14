@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 
 function SwimPlanView() {
   const videoRef = useRef(null);
+  const scrollRef = useRef(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [shoulderPain, setShoulderPain] = useState(3); // 0-10 scale
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -14,6 +16,50 @@ function SwimPlanView() {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  // Handle scroll to update button opacities
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    const handleScroll = () => {
+      setScrollPosition(scrollContainer.scrollLeft);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll);
+    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Calculate opacity based on scroll position and button position
+  const getButtonOpacity = (index) => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return 1;
+
+    const containerWidth = scrollContainer.clientWidth;
+    const buttonWidth = 48; // w-12 = 48px
+    const gap = 16; // gap-4 = 16px
+    const buttonStart = index * (buttonWidth + gap);
+    const buttonCenter = buttonStart + buttonWidth / 2;
+    
+    const fadeZone = 32; // 32px fade zone on each side
+    
+    // Left edge fade
+    if (buttonCenter < scrollPosition + fadeZone) {
+      const distance = scrollPosition + fadeZone - buttonCenter;
+      const opacity = Math.max(0.2, 1 - (distance / fadeZone));
+      return opacity;
+    }
+    
+    // Right edge fade
+    const rightEdge = scrollPosition + containerWidth;
+    if (buttonCenter > rightEdge - fadeZone) {
+      const distance = buttonCenter - (rightEdge - fadeZone);
+      const opacity = Math.max(0.2, 1 - (distance / fadeZone));
+      return opacity;
+    }
+    
+    return 1;
+  };
 
   // Pain level options (0 = no pain, 10 = worst pain)
   const painLevels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -51,25 +97,24 @@ function SwimPlanView() {
             
             {/* Scrollable Pain Level Selector */}
             <div className="relative">
-              <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" style={{ scrollBehavior: 'smooth' }}>
+              <div 
+                ref={scrollRef}
+                className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide" 
+                style={{ scrollBehavior: 'smooth' }}
+              >
                 {painLevels.map((level, index) => {
-                  // Calculate opacity based on position - fade first 2 and last 2 circles
-                  let opacityClass = '';
-                  if (index === 0) opacityClass = 'opacity-30';
-                  else if (index === 1) opacityClass = 'opacity-60';
-                  else if (index === painLevels.length - 2) opacityClass = 'opacity-60';
-                  else if (index === painLevels.length - 1) opacityClass = 'opacity-30';
-                  else opacityClass = 'opacity-100';
+                  const opacity = getButtonOpacity(index);
                   
                   return (
                     <button
                       key={level}
                       onClick={() => setShoulderPain(level)}
-                      className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${opacityClass} ${
+                      className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${
                         shoulderPain === level
                           ? 'bg-[#A8F5E0] text-slate-800'
                           : 'bg-slate-700/50 text-slate-200 hover:bg-slate-700/70'
                       }`}
+                      style={{ opacity }}
                     >
                       {level}
                     </button>
