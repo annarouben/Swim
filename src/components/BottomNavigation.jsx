@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { CalendarDaysIcon, ChartBarIcon } from '@heroicons/react/24/outline';
-import { CalendarDaysIcon as CalendarDaysSolidIcon, ChartBarIcon as ChartBarSolidIcon } from '@heroicons/react/24/solid';
+import { CalendarDaysIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon as CalendarDaysSolidIcon } from '@heroicons/react/24/solid';
 
 function BottomNavigation({ activeTab, onTabChange }) {
   const [isVisible, setIsVisible] = useState(true);
@@ -53,9 +53,8 @@ function BottomNavigation({ activeTab, onTabChange }) {
     {
       id: 'insights',
       label: 'Insights',
-      type: 'heroicon',
-      OutlineIcon: ChartBarIcon,
-      SolidIcon: ChartBarSolidIcon,
+      type: 'svg',
+      iconSrc: './images/stats.svg',
       description: 'Progress tracking'
     }
   ];

@@ -60,7 +60,7 @@ function SwimPlanView() {
                 
                 {/* Pain Level Display Circle - smaller with scroll control */}
                 <div 
-                  className="w-12 h-12 rounded-full bg-slate-800/50 border-2 border-slate-600/50 flex items-center justify-center cursor-pointer hover:bg-slate-700/50 transition-colors -my-1"
+                  className="w-12 h-12 rounded-full bg-slate-800/50 flex items-center justify-center cursor-pointer hover:bg-slate-700/50 transition-colors -my-1"
                   onWheel={(e) => {
                     e.preventDefault();
                     const delta = e.deltaY > 0 ? -1 : 1; // Scroll down decreases, scroll up increases
