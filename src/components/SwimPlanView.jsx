@@ -6,18 +6,18 @@ function SwimPlanView() {
   const videoRef = useRef(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [shoulderPain, setShoulderPain] = useState(3); // 0-10 scale
-  const [intensity, setIntensity] = useState('Steady'); // Easy, Steady, Push
+  const [intensity, setIntensity] = useState('Moderate'); // Light, Moderate, Intense
   const [isUpdatingWorkout, setIsUpdatingWorkout] = useState(false);
   const [animatingCards, setAnimatingCards] = useState(new Set());
 
   // Get workout routine based on pain level and intensity
-  const getWorkoutForPainLevel = (painLevel, intensityLevel = 'Steady') => {
+  const getWorkoutForPainLevel = (painLevel, intensityLevel = 'Moderate') => {
     // Base durations that get modified by intensity
     const getIntensityMultiplier = () => {
       switch(intensityLevel) {
-        case 'Easy': return 0.8;
-        case 'Push': return 1.3;
-        default: return 1.0; // Steady
+        case 'Light': return 0.8;
+        case 'Intense': return 1.3;
+        default: return 1.0; // Moderate
       }
     };
 
@@ -34,9 +34,9 @@ function SwimPlanView() {
             name: 'Gentle Breaststroke',
             duration: Math.round(baseDurations.gentle * multiplier),
             icon: 'noun-breaststroke-243000.svg',
-            description: intensityLevel === 'Easy' 
+            description: intensityLevel === 'Light' 
               ? 'Very light breaststroke with minimal effort. Focus on gentle floating and breathing.'
-              : intensityLevel === 'Push'
+              : intensityLevel === 'Intense'
               ? 'Gentle breaststroke with slightly longer intervals. Listen to your body and rest as needed.'
               : 'Very gentle breaststroke with minimal arm extension. Focus on leg movement and gentle arm gliding.'
           },
@@ -45,9 +45,9 @@ function SwimPlanView() {
             name: 'Water Walking',
             duration: Math.round(baseDurations.walking * multiplier),
             icon: 'noun-wave-5622627.svg',
-            description: intensityLevel === 'Easy'
+            description: intensityLevel === 'Light'
               ? 'Easy water walking and gentle floating exercises.'
-              : intensityLevel === 'Push'
+              : intensityLevel === 'Intense'
               ? 'Water walking with gentle resistance exercises and light stretching.'
               : 'Gentle water walking and floating exercises to promote circulation without strain.'
           }
@@ -64,9 +64,9 @@ function SwimPlanView() {
             name: 'Breaststroke',
             duration: Math.round(baseDurations.breast * multiplier),
             icon: 'noun-breaststroke-243000.svg',
-            description: intensityLevel === 'Easy'
+            description: intensityLevel === 'Light'
               ? 'Easy-paced breaststroke focusing on form and gentle movement.'
-              : intensityLevel === 'Push'
+              : intensityLevel === 'Intense'
               ? 'Progressive breaststroke building intensity as shoulder tolerates.'
               : 'Start with gentle breaststroke sculling and gradually progress as tolerated.'
           },
@@ -75,9 +75,9 @@ function SwimPlanView() {
             name: 'Modified Freestyle',
             duration: Math.round(baseDurations.freestyle * multiplier),
             icon: 'noun-freestyle-243002.svg',
-            description: intensityLevel === 'Easy'
+            description: intensityLevel === 'Light'
               ? 'Very controlled, easy freestyle with extra rest between laps.'
-              : intensityLevel === 'Push'
+              : intensityLevel === 'Intense'
               ? 'Modified freestyle with gradual increase in pace and range of motion.'
               : 'Shortened, controlled freestyle strokes. Avoid excessive arm extension and rotation.'
           },
@@ -101,9 +101,9 @@ function SwimPlanView() {
             name: 'Butterfly',
             duration: Math.round(baseDurations.butterfly * multiplier),
             icon: 'noun-butterfly-stroke-242995.svg',
-            description: intensityLevel === 'Easy'
+            description: intensityLevel === 'Light'
               ? 'Easy butterfly focusing on technique and rhythm.'
-              : intensityLevel === 'Push'
+              : intensityLevel === 'Intense'
               ? 'High-intensity butterfly with sprint intervals and minimal rest.'
               : 'Full butterfly strokes to build shoulder strength and endurance.'
           },
@@ -112,9 +112,9 @@ function SwimPlanView() {
             name: 'Freestyle',
             duration: Math.round(baseDurations.freestyle * multiplier),
             icon: 'noun-freestyle-243002.svg',
-            description: intensityLevel === 'Easy'
+            description: intensityLevel === 'Light'
               ? 'Comfortable freestyle pace with focus on smooth technique.'
-              : intensityLevel === 'Push'
+              : intensityLevel === 'Intense'
               ? 'High-intensity freestyle with sprint sets and competitive pacing.'
               : 'High-intensity freestyle with full range of motion and bilateral breathing.'
           },
@@ -123,9 +123,9 @@ function SwimPlanView() {
             name: 'Backstroke',
             duration: Math.round(baseDurations.backstroke * multiplier),
             icon: 'noun-backstroke-242997.svg',
-            description: intensityLevel === 'Easy'
+            description: intensityLevel === 'Light'
               ? 'Easy backstroke with focus on body position and gentle rotation.'
-              : intensityLevel === 'Push'
+              : intensityLevel === 'Intense'
               ? 'Power backstroke with emphasis on strong catch and fast turnover.'
               : 'Full backstroke to work opposing muscle groups and improve flexibility.'
           },
@@ -134,9 +134,9 @@ function SwimPlanView() {
             name: 'Cool Down',
             duration: Math.round(baseDurations.cool * multiplier),
             icon: 'noun-snowflake-7926919.svg',
-            description: intensityLevel === 'Easy'
+            description: intensityLevel === 'Light'
               ? 'Extended cool down with gentle stretching and relaxation.'
-              : intensityLevel === 'Push'
+              : intensityLevel === 'Intense'
               ? 'Brief but thorough cool down with targeted stretches.'
               : 'Brief cool down with easy breaststroke and stretching.'
           }
@@ -233,190 +233,66 @@ function SwimPlanView() {
           {/* Card Title */}
           <h3 className="text-lg font-medium mb-4 text-center text-slate-200">Swim</h3>
           
-          {/* Controls Section - Side by Side */}
-          <div className="mb-6">
-            <div className="flex gap-8 justify-start">
-              {/* Pain Level Control */}
-              <div className="flex flex-col items-center">
-                {/* Title above control */}
-                <div className="mb-3 text-center">
-                  <h4 className="text-sm font-medium text-slate-200">Shoulder pain level</h4>
-                  <div className="text-xs text-slate-200 mt-1">0 - no pain, 10 - worst</div>
-                </div>
-                
-                {/* Up/Down Chevron Control */}
-                <div className="flex flex-col items-center">
-                  {/* Up Button */}
-                  <button
-                    onClick={() => handlePainLevelChange(Math.min(10, shoulderPain + 1))}
-                    disabled={shoulderPain === 10}
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
-                  >
-                    <ChevronUpIcon className="w-6 h-6 text-slate-300" />
-                  </button>
-                  
-                  {/* Pain Level Display Circle */}
-                  <div 
-                    className="w-12 h-12 rounded-full bg-slate-800/50 flex items-center justify-center cursor-pointer hover:bg-slate-700/50 transition-colors -my-1"
-                    onWheel={(e) => {
-                      e.preventDefault();
-                      const delta = e.deltaY > 0 ? -1 : 1;
-                      handlePainLevelChange(Math.max(0, Math.min(10, shoulderPain + delta)));
-                    }}
-                    style={{ touchAction: 'none' }}
-                    onTouchStart={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const startY = e.touches[0].clientY;
-                      const startValue = shoulderPain;
-                      
-                      const handleTouchMove = (moveEvent) => {
-                        if (moveEvent.touches.length === 0) return;
-                        moveEvent.preventDefault();
-                        const touch = moveEvent.touches[0];
-                        const deltaY = touch.clientY - startY;
-                        const delta = Math.round(deltaY / 15);
-                        const newValue = Math.max(0, Math.min(10, startValue - delta));
-                        handlePainLevelChange(newValue);
-                      };
-                      
-                      const handleTouchEnd = () => {
-                        document.removeEventListener('touchmove', handleTouchMove, { passive: false });
-                        document.removeEventListener('touchend', handleTouchEnd, { passive: false });
-                      };
-                      
-                      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-                      document.addEventListener('touchend', handleTouchEnd, { passive: false });
-                    }}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const startY = e.clientY;
-                      const startValue = shoulderPain;
-                      
-                      const handleMouseMove = (moveEvent) => {
-                        const deltaY = moveEvent.clientY - startY;
-                        const delta = Math.round(deltaY / 10);
-                        const newValue = Math.max(0, Math.min(10, startValue - delta));
-                        handlePainLevelChange(newValue);
-                      };
-                      
-                      const handleMouseUp = () => {
-                        document.removeEventListener('mousemove', handleMouseMove);
-                        document.removeEventListener('mouseup', handleMouseUp);
-                      };
-                      
-                      document.addEventListener('mousemove', handleMouseMove);
-                      document.addEventListener('mouseup', handleMouseUp);
-                    }}
-                  >
-                    <span className="text-xs font-bold text-white select-none">
-                      {shoulderPain}
-                    </span>
-                  </div>
-                  
-                  {/* Down Button */}
-                  <button
-                    onClick={() => handlePainLevelChange(Math.max(0, shoulderPain - 1))}
-                    disabled={shoulderPain === 0}
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
-                  >
-                    <ChevronDownIcon className="w-6 h-6 text-slate-300" />
-                  </button>
-                </div>
+          {/* Controls Section - Stacked Vertically */}
+          <div className="mb-6 space-y-6">
+            {/* Pain Level Control */}
+            <div className="flex flex-col items-center">
+              {/* Title above control - left aligned */}
+              <div className="mb-3 w-full">
+                <h4 className="text-sm font-medium text-slate-200 text-left">Shoulder pain level <span className="text-xs text-slate-200 font-normal">• 0 - no pain, 10 - worst</span></h4>
               </div>
+              
+              {/* Segmented Control for Pain Level */}
+              <div className="bg-slate-800/50 rounded-full p-1 flex w-full gap-1 justify-between">
+                {/* Individual circle buttons for 0-10 */}
+                {Array.from({ length: 11 }, (_, i) => i).map((level) => (
+                  <button
+                    key={level}
+                    onClick={() => handlePainLevelChange(level)}
+                    className={`py-2 px-1 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 flex-1 ${
+                      shoulderPain === level
+                        ? 'bg-[#A8F5E0] text-slate-900'
+                        : 'bg-transparent text-slate-300 hover:bg-slate-700/30'
+                    }`}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-              {/* Intensity Control */}
-              <div className="flex flex-col items-center">
-                {/* Title above control */}
-                <div className="mb-3 text-center">
-                  <h4 className="text-sm font-medium text-slate-200">Exercise intensity</h4>
-                  <div className="text-xs text-slate-200 mt-1">Choose your preference</div>
-                </div>
+            {/* Intensity Control */}
+            <div className="flex flex-col items-center">
+              {/* Title above control - left aligned */}
+              <div className="mb-3 w-full">
+                <h4 className="text-sm font-medium text-slate-200 text-left">Exercise intensity <span className="text-xs text-slate-200 font-normal">• Choose your preference</span></h4>
+              </div>
+              
+              {/* Segmented Control */}
+              <div className="bg-slate-800/50 rounded-full p-1 flex relative w-full">
+                {/* Background slider that moves */}
+                <div 
+                  className={`absolute top-1 bottom-1 bg-[#A8F5E0] rounded-full transition-all duration-300 ease-in-out ${
+                    intensity === 'Light' ? 'left-1 w-1/3' :
+                    intensity === 'Moderate' ? 'left-1/2 transform -translate-x-1/2 w-1/3' :
+                    'right-1 w-1/3'
+                  }`}
+                />
                 
-                {/* Up/Down Chevron Control */}
-                <div className="flex flex-col items-center">
-                  {/* Up Button */}
+                {/* Toggle buttons */}
+                {['Light', 'Moderate', 'Intense'].map((level) => (
                   <button
-                    onClick={() => handleIntensityChange(intensity === 'Easy' ? 'Steady' : intensity === 'Steady' ? 'Push' : 'Push')}
-                    disabled={intensity === 'Push'}
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+                    key={level}
+                    onClick={() => handleIntensityChange(level)}
+                    className={`relative z-10 px-3 py-2 text-sm font-medium transition-all duration-200 flex-1 ${
+                      intensity === level
+                        ? 'text-slate-900'
+                        : 'text-slate-300'
+                    }`}
                   >
-                    <ChevronUpIcon className="w-6 h-6 text-slate-300" />
+                    {level}
                   </button>
-                  
-                  {/* Intensity Level Display Circle */}
-                  <div 
-                    className="w-12 h-12 rounded-full bg-slate-800/50 flex items-center justify-center cursor-pointer hover:bg-slate-700/50 transition-colors -my-1"
-                    onWheel={(e) => {
-                      e.preventDefault();
-                      const delta = e.deltaY > 0 ? -1 : 1;
-                      const levels = ['Easy', 'Steady', 'Push'];
-                      const currentIndex = levels.indexOf(intensity);
-                      const newIndex = Math.max(0, Math.min(2, currentIndex + delta));
-                      handleIntensityChange(levels[newIndex]);
-                    }}
-                    style={{ touchAction: 'none' }}
-                    onTouchStart={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const startY = e.touches[0].clientY;
-                      const levels = ['Easy', 'Steady', 'Push'];
-                      const startIndex = levels.indexOf(intensity);
-                      
-                      const handleTouchMove = (moveEvent) => {
-                        if (moveEvent.touches.length === 0) return;
-                        moveEvent.preventDefault();
-                        const touch = moveEvent.touches[0];
-                        const deltaY = touch.clientY - startY;
-                        const delta = Math.round(deltaY / 30);
-                        const newIndex = Math.max(0, Math.min(2, startIndex - delta));
-                        handleIntensityChange(levels[newIndex]);
-                      };
-                      
-                      const handleTouchEnd = () => {
-                        document.removeEventListener('touchmove', handleTouchMove, { passive: false });
-                        document.removeEventListener('touchend', handleTouchEnd, { passive: false });
-                      };
-                      
-                      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-                      document.addEventListener('touchend', handleTouchEnd, { passive: false });
-                    }}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const startY = e.clientY;
-                      const levels = ['Easy', 'Steady', 'Push'];
-                      const startIndex = levels.indexOf(intensity);
-                      
-                      const handleMouseMove = (moveEvent) => {
-                        const deltaY = moveEvent.clientY - startY;
-                        const delta = Math.round(deltaY / 20);
-                        const newIndex = Math.max(0, Math.min(2, startIndex - delta));
-                        handleIntensityChange(levels[newIndex]);
-                      };
-                      
-                      const handleMouseUp = () => {
-                        document.removeEventListener('mousemove', handleMouseMove);
-                        document.removeEventListener('mouseup', handleMouseUp);
-                      };
-                      
-                      document.addEventListener('mousemove', handleMouseMove);
-                      document.addEventListener('mouseup', handleMouseUp);
-                    }}
-                  >
-                    <span className="text-xs font-bold text-white select-none">{intensity}</span>
-                  </div>
-                  
-                  {/* Down Button */}
-                  <button
-                    onClick={() => handleIntensityChange(intensity === 'Push' ? 'Steady' : intensity === 'Steady' ? 'Easy' : 'Easy')}
-                    disabled={intensity === 'Easy'}
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
-                  >
-                    <ChevronDownIcon className="w-6 h-6 text-slate-300" />
-                  </button>
-                </div>
+                ))}
               </div>
             </div>
           </div>
