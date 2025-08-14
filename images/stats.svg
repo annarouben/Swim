@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+     fill="none" stroke="currentColor" stroke-width="2.25"
+     stroke-linecap="round" stroke-linejoin="round" aria-labelledby="title desc">
+  <title id="title">Swim stats icon — increasing bars over rounded wave</title>
+  <desc id="desc">Three vertical bars of increasing height above a single smooth, rounded wave</desc>
+
+  <!-- Bars -->
+  <path d="M6 10v6"/>
+  <path d="M12 6v10"/>
+  <path d="M18 3v13"/>
+
+  <!-- Single rounded wave (matches your example style) -->
+  <path d="M3 20c0 0 1.5 2 4.5 0s4.5 0 4.5 0 1.5 2 4.5 0 4.5 0 4.5 0"/>
+</svg>
