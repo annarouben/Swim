@@ -150,6 +150,7 @@ function SwimPlanView() {
                 <div className="flex justify-center">
                   <div 
                     className="relative w-20 h-20 cursor-pointer select-none"
+                    style={{ touchAction: 'none' }}
                     onMouseDown={(e) => {
                       // Don't start drag if clicking on chevron buttons
                       if (e.target.closest('button')) return;
@@ -174,22 +175,27 @@ function SwimPlanView() {
                       // Don't start drag if touching chevron buttons
                       if (e.target.closest('button')) return;
                       
+                      e.preventDefault(); // Prevent scrolling
                       const startY = e.touches[0].clientY;
+                      const startValue = realisticSpherePain;
+                      
                       const handleTouchMove = (moveEvent) => {
                         if (moveEvent.touches.length === 0) return;
+                        moveEvent.preventDefault(); // Prevent scrolling during drag
                         const touch = moveEvent.touches[0];
                         const deltaY = touch.clientY - startY;
                         const delta = Math.round(deltaY / 15); // Only vertical movement
-                        const newValue = Math.max(0, Math.min(10, realisticSpherePain - delta));
+                        const newValue = Math.max(0, Math.min(10, startValue - delta));
                         setRealisticSpherePain(newValue);
                       };
                       
-                      const handleTouchEnd = () => {
-                        document.removeEventListener('touchmove', handleTouchMove);
+                      const handleTouchEnd = (endEvent) => {
+                        endEvent.preventDefault();
+                        document.removeEventListener('touchmove', handleTouchMove, { passive: false });
                         document.removeEventListener('touchend', handleTouchEnd);
                       };
                       
-                      document.addEventListener('touchmove', handleTouchMove);
+                      document.addEventListener('touchmove', handleTouchMove, { passive: false });
                       document.addEventListener('touchend', handleTouchEnd);
                     }}
                   >
