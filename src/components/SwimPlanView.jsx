@@ -9,6 +9,7 @@ function SwimPlanView() {
   const [intensity, setIntensity] = useState('Moderate'); // Light, Moderate, Intense
   const [isUpdatingWorkout, setIsUpdatingWorkout] = useState(false);
   const [animatingCards, setAnimatingCards] = useState(new Set());
+  const [isProfileExpanded, setIsProfileExpanded] = useState(false);
 
   // Get workout routine based on pain level and intensity
   const getWorkoutForPainLevel = (painLevel, intensityLevel = 'Moderate') => {
@@ -233,68 +234,104 @@ function SwimPlanView() {
           {/* Card Title */}
           <h3 className="text-lg font-medium mb-4 text-center text-slate-200">Swim</h3>
           
-          {/* Controls Section - Stacked Vertically */}
-          <div className="mb-6 space-y-6">
-            {/* Pain Level Control */}
-            <div className="flex flex-col items-center">
-              {/* Title above control - left aligned */}
-              <div className="mb-3 w-full">
-                <h4 className="text-sm font-medium text-slate-200 text-left">Shoulder pain level <span className="text-xs text-slate-200 font-normal">• 0 - no pain, 10 - worst</span></h4>
+          {/* Health Profile Section */}
+          <div className="mb-6">
+            {/* Profile Header - Clickable to expand/collapse */}
+            <button 
+              onClick={() => setIsProfileExpanded(!isProfileExpanded)}
+              className="w-full flex items-center justify-between bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 hover:bg-slate-700/40 transition-all duration-200 mb-4"
+            >
+              <div className="flex items-center gap-3">
+                {/* Profile Picture */}
+                <div className="w-14 h-14 rounded-full bg-slate-700/60 flex items-center justify-center flex-shrink-0">
+                  <div 
+                    className="w-10 h-10 text-slate-200"
+                    style={{
+                      WebkitMask: 'url(./images/noun-woman-face-1434620.svg) no-repeat center / contain',
+                      mask: 'url(./images/noun-woman-face-1434620.svg) no-repeat center / contain',
+                      backgroundColor: 'currentColor'
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col items-start">
+                  <h4 className="font-medium text-slate-200">Health Profile</h4>
+                  <span className="text-xs text-slate-300">
+                    Pain: {shoulderPain} • Intensity: {intensity}
+                  </span>
+                </div>
               </div>
-              
-              {/* Segmented Control for Pain Level */}
-              <div className="bg-slate-800/50 rounded-full p-1 flex w-full gap-1 justify-between">
-                {/* Individual circle buttons for 0-10 */}
-                {Array.from({ length: 11 }, (_, i) => i).map((level) => (
-                  <button
-                    key={level}
-                    onClick={() => handlePainLevelChange(level)}
-                    className={`py-2 px-1 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 flex-1 ${
-                      shoulderPain === level
-                        ? 'bg-[#A8F5E0] text-slate-900'
-                        : 'bg-transparent text-slate-300 hover:bg-slate-700/30'
-                    }`}
-                  >
-                    {level}
-                  </button>
-                ))}
-              </div>
-            </div>
+              <ChevronDownIcon 
+                className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${
+                  isProfileExpanded ? 'transform rotate-180' : ''
+                }`}
+              />
+            </button>
 
-            {/* Intensity Control */}
-            <div className="flex flex-col items-center">
-              {/* Title above control - left aligned */}
-              <div className="mb-3 w-full">
-                <h4 className="text-sm font-medium text-slate-200 text-left">Exercise intensity <span className="text-xs text-slate-200 font-normal">• Choose your preference</span></h4>
+            {/* Expandable Controls - Stacked Vertically */}
+            {isProfileExpanded && (
+              <div className="space-y-6 animate-fadeIn">
+                {/* Pain Level Control */}
+                <div className="flex flex-col items-center">
+                  {/* Title above control - left aligned */}
+                  <div className="mb-3 w-full">
+                    <h4 className="text-sm font-medium text-slate-200 text-left">Shoulder pain level <span className="text-xs text-slate-200 font-normal">• 0 - no pain, 10 - worst</span></h4>
+                  </div>
+                  
+                  {/* Segmented Control for Pain Level */}
+                  <div className="bg-slate-800/50 rounded-full p-1 flex w-full gap-1 justify-between">
+                    {/* Individual circle buttons for 0-10 */}
+                    {Array.from({ length: 11 }, (_, i) => i).map((level) => (
+                      <button
+                        key={level}
+                        onClick={() => handlePainLevelChange(level)}
+                        className={`py-2 px-1 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 flex-1 ${
+                          shoulderPain === level
+                            ? 'bg-[#A8F5E0] text-slate-900'
+                            : 'bg-transparent text-slate-300 hover:bg-slate-700/30'
+                        }`}
+                      >
+                        {level}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Intensity Control */}
+                <div className="flex flex-col items-center">
+                  {/* Title above control - left aligned */}
+                  <div className="mb-3 w-full">
+                    <h4 className="text-sm font-medium text-slate-200 text-left">Exercise intensity <span className="text-xs text-slate-200 font-normal">• Choose your preference</span></h4>
+                  </div>
+                  
+                  {/* Segmented Control */}
+                  <div className="bg-slate-800/50 rounded-full p-1 flex relative w-full">
+                    {/* Background slider that moves */}
+                    <div 
+                      className={`absolute top-1 bottom-1 bg-[#A8F5E0] rounded-full transition-all duration-300 ease-in-out ${
+                        intensity === 'Light' ? 'left-1 w-1/3' :
+                        intensity === 'Moderate' ? 'left-1/2 transform -translate-x-1/2 w-1/3' :
+                        'right-1 w-1/3'
+                      }`}
+                    />
+                    
+                    {/* Toggle buttons */}
+                    {['Light', 'Moderate', 'Intense'].map((level) => (
+                      <button
+                        key={level}
+                        onClick={() => handleIntensityChange(level)}
+                        className={`relative z-10 px-3 py-2 text-sm font-medium transition-all duration-200 flex-1 ${
+                          intensity === level
+                            ? 'text-slate-900'
+                            : 'text-slate-300'
+                        }`}
+                      >
+                        {level}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
-              
-              {/* Segmented Control */}
-              <div className="bg-slate-800/50 rounded-full p-1 flex relative w-full">
-                {/* Background slider that moves */}
-                <div 
-                  className={`absolute top-1 bottom-1 bg-[#A8F5E0] rounded-full transition-all duration-300 ease-in-out ${
-                    intensity === 'Light' ? 'left-1 w-1/3' :
-                    intensity === 'Moderate' ? 'left-1/2 transform -translate-x-1/2 w-1/3' :
-                    'right-1 w-1/3'
-                  }`}
-                />
-                
-                {/* Toggle buttons */}
-                {['Light', 'Moderate', 'Intense'].map((level) => (
-                  <button
-                    key={level}
-                    onClick={() => handleIntensityChange(level)}
-                    className={`relative z-10 px-3 py-2 text-sm font-medium transition-all duration-200 flex-1 ${
-                      intensity === level
-                        ? 'text-slate-900'
-                        : 'text-slate-300'
-                    }`}
-                  >
-                    {level}
-                  </button>
-                ))}
-              </div>
-            </div>
+            )}
           </div>
           {/* Workout Section */}
           <div className="space-y-3">
