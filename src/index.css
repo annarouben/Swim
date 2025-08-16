@@ -316,6 +316,27 @@ body::before {
   }
 }
 
+/* Stroke efficiency scroll indicator animation */
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.scroll-indicator {
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+
+/* Horizontal scroll snap and smooth scrolling */
+.stroke-scroll {
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.stroke-card {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
 /* Utility classes */
 .animate-float {
   animation: float infinite ease-in-out;

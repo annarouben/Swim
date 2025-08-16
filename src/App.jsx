@@ -3,6 +3,7 @@ import './App.css'
 import SplashScreen from './components/SplashScreen'
 import ReservationsView from './components/ReservationsView'
 import SwimPlanView from './components/SwimPlanView'
+import Insights from './components/Insights'
 import BottomNavigation from './components/BottomNavigation'
 
 function App() {
@@ -41,17 +42,7 @@ function App() {
           <div className="relative">
             {activeTab === 'reserve' && <ReservationsView />}
             {activeTab === 'swim' && <SwimPlanView />}
-            {activeTab === 'insights' && (
-              <div className="min-h-screen flex items-center justify-center">
-                <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-6 text-white shadow-2xl max-w-sm mx-4">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">📊</div>
-                    <h2 className="text-xl font-semibold mb-2">Insights</h2>
-                    <p className="text-slate-300 text-sm">Coming soon! Track your swimming progress and health improvements here.</p>
-                  </div>
-                </div>
-              </div>
-            )}
+            {activeTab === 'insights' && <Insights />}
           </div>
           
           {/* Bottom Navigation */}
