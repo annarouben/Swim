@@ -45,7 +45,7 @@ function SwimPlanView() {
             id: 'water-walking',
             name: 'Water Walking',
             duration: Math.round(baseDurations.walking * multiplier),
-            icon: 'noun-wave-5622627.svg',
+            icon: 'noun-bipedal-walking-5312620.svg',
             description: intensityLevel === 'Light'
               ? 'Easy water walking and gentle floating exercises.'
               : intensityLevel === 'Intense'
@@ -355,7 +355,7 @@ function SwimPlanView() {
                     <div className="relative">
                       <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
                         <div 
-                          className="w-10 h-10"
+                          className={interval.icon === 'noun-bipedal-walking-5312620.svg' ? "w-16 h-16" : "w-10 h-10"}
                           style={{
                             WebkitMask: `url(./images/${interval.icon}) no-repeat center / contain`,
                             mask: `url(./images/${interval.icon}) no-repeat center / contain`,

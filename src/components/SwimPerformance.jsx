@@ -1,6 +1,71 @@
-import { ChartBarIcon, ArrowTrendingUpIcon, ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { ChartBarIcon, ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { useState, useRef, useEffect } from 'react';
 
 function SwimPerformance() {
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const scrollRef = useRef(null);
+
+  // Handle scroll to update active dot
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const scrollContainer = scrollRef.current;
+      const scrollLeft = scrollContainer.scrollLeft;
+      const containerWidth = scrollContainer.clientWidth;
+      
+      // Find which card is most visible in the viewport
+      const cards = scrollContainer.children;
+      let activeIndex = 0;
+      let maxVisibleArea = 0;
+      
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        const cardRect = card.getBoundingClientRect();
+        const containerRect = scrollContainer.getBoundingClientRect();
+        
+        // Calculate visible area of this card
+        const visibleLeft = Math.max(cardRect.left, containerRect.left);
+        const visibleRight = Math.min(cardRect.right, containerRect.right);
+        const visibleWidth = Math.max(0, visibleRight - visibleLeft);
+        const visibleArea = visibleWidth * cardRect.height;
+        
+        if (visibleArea > maxVisibleArea) {
+          maxVisibleArea = visibleArea;
+          activeIndex = i;
+        }
+      }
+      
+      setActiveCardIndex(activeIndex);
+    }
+  };
+
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (scrollElement) {
+      // Throttle scroll events for better performance
+      let throttleTimer = null;
+      const throttledHandleScroll = () => {
+        if (throttleTimer) {
+          clearTimeout(throttleTimer);
+        }
+        throttleTimer = setTimeout(() => {
+          handleScroll();
+        }, 10);
+      };
+
+      // Initial call to set correct active state
+      handleScroll();
+      
+      scrollElement.addEventListener('scroll', throttledHandleScroll, { passive: true });
+      
+      return () => {
+        scrollElement.removeEventListener('scroll', throttledHandleScroll);
+        if (throttleTimer) {
+          clearTimeout(throttleTimer);
+        }
+      };
+    }
+  }, []);
+
   // Mock data - in real app this would come from watch/API
   const performanceData = {
     strokeEfficiency: [
@@ -42,13 +107,9 @@ function SwimPerformance() {
       }
     ],
     speed: {
-      current: '1:15',
-      previous: '1:22',
-      improvement: 7
-    },
-    efficiency: {
-      distancePerStroke: 2.1,
-      rating: 'excellent'
+      current: '13',
+      previous: '15',
+      improvement: 2
     },
     consistency: {
       steadyLaps: 15,
@@ -62,20 +123,13 @@ function SwimPerformance() {
       <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-medium text-slate-200">Stroke Efficiency</h4>
-          {/* Scroll indicator */}
-          <div className="flex items-center gap-2 text-xs text-slate-400 scroll-indicator">
-            <span>Swipe →</span>
-            <div className="flex gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#A8F5E0]/60"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-500"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-500"></div>
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-500"></div>
-            </div>
-          </div>
         </div>
         
         {/* Horizontally scrollable stroke cards */}
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide stroke-scroll">
+        <div 
+          ref={scrollRef}
+          className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide stroke-scroll"
+        >
           {performanceData.strokeEfficiency.map((stroke, index) => (
             <div key={stroke.stroke} className="stroke-card flex-shrink-0 w-72 bg-slate-700/30 rounded-lg p-3">
               <div className="flex gap-3">
@@ -114,6 +168,18 @@ function SwimPerformance() {
             </div>
           ))}
         </div>
+        
+        {/* Swipe dots indicator */}
+        <div className="flex justify-center gap-1 mt-3">
+          {performanceData.strokeEfficiency.map((stroke, index) => (
+            <div 
+              key={`dot-${index}`}
+              className={`w-1.5 h-1.5 rounded-full ${
+                index === activeCardIndex ? 'bg-[#A8F5E0]' : 'bg-slate-500'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Speed Progress Card */}
@@ -123,7 +189,14 @@ function SwimPerformance() {
           <div className="flex flex-col items-center justify-start flex-shrink-0">
             <div className="relative">
               <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
-                <ClockIcon className="w-10 h-10 text-slate-200" />
+                <div 
+                  className="w-10 h-10"
+                  style={{
+                    WebkitMask: `url(./images/noun-speedometer-1580091.svg) no-repeat center / contain`,
+                    mask: `url(./images/noun-speedometer-1580091.svg) no-repeat center / contain`,
+                    backgroundColor: 'currentColor'
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -131,45 +204,15 @@ function SwimPerformance() {
           {/* Right Column - Content */}
           <div className="flex-1 pt-1">
             <h4 className="font-medium text-slate-200 mb-2 text-left">
-              <span className="text-[#A8F5E0] font-bold text-base mr-2">{performanceData.speed.current}</span>
+              <span className="text-[#A8F5E0] font-bold text-base mr-2">{performanceData.speed.current}s/lap</span>
               Speed Progress
             </h4>
             <div className="space-y-1">
               <p className="text-sm text-slate-300 leading-normal text-left">
-                Previous: {performanceData.speed.previous} ({performanceData.speed.improvement}s improvement!)
+                Previous: {performanceData.speed.previous}s ({performanceData.speed.improvement}s improvement!)
               </p>
               <p className="text-xs text-slate-300 leading-normal text-left">
                 You're getting faster each week
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Distance Per Stroke Card */}
-      <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-        <div className="flex gap-4">
-          {/* Left Column - Icon */}
-          <div className="flex flex-col items-center justify-start flex-shrink-0">
-            <div className="relative">
-              <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
-                <ArrowTrendingUpIcon className="w-10 h-10 text-slate-200" />
-              </div>
-            </div>
-          </div>
-          
-          {/* Right Column - Content */}
-          <div className="flex-1 pt-1">
-            <h4 className="font-medium text-slate-200 mb-2 text-left">
-              <span className="text-[#A8F5E0] font-bold text-base mr-2">{performanceData.efficiency.distancePerStroke}m</span>
-              Swimming Efficiency
-            </h4>
-            <div className="space-y-1">
-              <p className="text-sm text-slate-300 leading-normal text-left">
-                Excellent efficiency! Great technique.
-              </p>
-              <p className="text-xs text-slate-300 leading-normal text-left">
-                You're maximizing each stroke
               </p>
             </div>
           </div>

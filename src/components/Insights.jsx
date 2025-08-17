@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChartPieIcon, HeartIcon } from '@heroicons/react/24/solid';
+import { HeartIcon } from '@heroicons/react/24/solid';
 import SwimPerformance from './SwimPerformance';
 import Health from './Health';
 
@@ -64,7 +64,14 @@ function Insights() {
                     : 'text-slate-300'
                 }`}
               >
-                <ChartPieIcon className="w-4 h-4" />
+                <div 
+                  className="w-4 h-4"
+                  style={{
+                    WebkitMask: `url(./images/noun-freestyle-243002.svg) no-repeat center / contain`,
+                    mask: `url(./images/noun-freestyle-243002.svg) no-repeat center / contain`,
+                    backgroundColor: 'currentColor'
+                  }}
+                />
                 Swimming
               </button>
               
