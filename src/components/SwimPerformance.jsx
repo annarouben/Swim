@@ -109,11 +109,13 @@ function SwimPerformance() {
     speed: {
       current: '13',
       previous: '15',
-      improvement: 2
-    },
-    consistency: {
-      steadyLaps: 15,
-      rating: 'great'
+      improvement: 2,
+      suggestions: [
+        'Try interval training: 8x25m at race pace with 15s rest',
+        'Focus on streamline position off the wall',
+        'Practice bilateral breathing for better balance',
+        'Work on catch and pull technique with paddles'
+      ]
     }
   };
 
@@ -207,43 +209,25 @@ function SwimPerformance() {
               <span className="text-[#A8F5E0] font-bold text-base mr-2">{performanceData.speed.current}s/lap</span>
               Speed Progress
             </h4>
-            <div className="space-y-1">
+            <div className="space-y-2">
               <p className="text-sm text-slate-300 leading-normal text-left">
                 Previous: {performanceData.speed.previous}s ({performanceData.speed.improvement}s improvement!)
               </p>
               <p className="text-xs text-slate-300 leading-normal text-left">
                 You're getting faster each week
               </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Consistency Card */}
-      <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-        <div className="flex gap-4">
-          {/* Left Column - Icon */}
-          <div className="flex flex-col items-center justify-start flex-shrink-0">
-            <div className="relative">
-              <div className="w-14 h-14 rounded-full bg-slate-700/30 flex items-center justify-center">
-                <CheckCircleIcon className="w-10 h-10 text-slate-200" />
+              
+              {/* Speed improvement suggestions */}
+              <div className="pt-1">
+                <ul className="space-y-1">
+                  {performanceData.speed.suggestions.slice(0, 2).map((suggestion, index) => (
+                    <li key={index} className="text-xs text-slate-300 text-left flex items-start">
+                      <span className="text-[#A8F5E0] mr-1 flex-shrink-0">•</span>
+                      <span>{suggestion}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          </div>
-          
-          {/* Right Column - Content */}
-          <div className="flex-1 pt-1">
-            <h4 className="font-medium text-slate-200 mb-2 text-left">
-              <span className="text-[#A8F5E0] font-bold text-base mr-2">{performanceData.consistency.steadyLaps}</span>
-              Technique Consistency
-            </h4>
-            <div className="space-y-1">
-              <p className="text-sm text-slate-300 leading-normal text-left">
-                Your technique stayed steady for 15 laps
-              </p>
-              <p className="text-xs text-slate-300 leading-normal text-left">
-                Great endurance and form control
-              </p>
             </div>
           </div>
         </div>

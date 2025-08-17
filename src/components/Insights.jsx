@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { HeartIcon } from '@heroicons/react/24/solid';
 import SwimPerformance from './SwimPerformance';
 import Health from './Health';
 
 function Insights() {
   const videoRef = useRef(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [activeTab, setActiveTab] = useState('performance'); // 'performance' or 'health'
 
   useEffect(() => {
     const video = videoRef.current;
@@ -43,59 +41,18 @@ function Insights() {
         <div className="bg-gradient-to-b from-slate-900/60 to-slate-800/10 backdrop-blur-md rounded-2xl p-3 sm:p-6 text-white shadow-2xl w-full max-w-none sm:max-w-md relative mx-1 sm:mx-0 flex flex-col h-full">
           
           {/* Card Title */}
-          <h3 className="text-lg font-medium mb-4 text-center text-slate-200">Insights</h3>
+          <h3 className="text-lg font-medium mb-6 text-center text-slate-200">Insights</h3>
           
-          {/* Tab Navigation */}
-          <div className="mb-6">
-            <div className="bg-slate-800/50 rounded-full p-1 flex relative">
-              {/* Background slider that moves */}
-              <div 
-                className={`absolute top-1 bottom-1 bg-[#A8F5E0] rounded-full transition-all duration-300 ease-in-out w-1/2 ${
-                  activeTab === 'performance' ? 'left-1' : 'right-1'
-                }`}
-              />
-              
-              {/* Tab buttons */}
-              <button
-                onClick={() => setActiveTab('performance')}
-                className={`relative z-10 px-4 py-2 text-sm font-medium transition-all duration-200 flex-1 flex items-center justify-center gap-2 ${
-                  activeTab === 'performance'
-                    ? 'text-slate-900'
-                    : 'text-slate-300'
-                }`}
-              >
-                <div 
-                  className="w-4 h-4"
-                  style={{
-                    WebkitMask: `url(./images/noun-freestyle-243002.svg) no-repeat center / contain`,
-                    mask: `url(./images/noun-freestyle-243002.svg) no-repeat center / contain`,
-                    backgroundColor: 'currentColor'
-                  }}
-                />
-                Swimming
-              </button>
-              
-              <button
-                onClick={() => setActiveTab('health')}
-                className={`relative z-10 px-4 py-2 text-sm font-medium transition-all duration-200 flex-1 flex items-center justify-center gap-2 ${
-                  activeTab === 'health'
-                    ? 'text-slate-900'
-                    : 'text-slate-300'
-                }`}
-              >
-                <HeartIcon className="w-4 h-4" />
-                Health
-              </button>
-            </div>
-          </div>
-          
-          {/* Tab Content */}
-          <div className="flex-1">
-            {activeTab === 'performance' ? (
-              <SwimPerformance />
-            ) : (
+          {/* Combined Content - Swimming Performance + Health */}
+          <div className="space-y-6">
+            {/* Swimming Performance Section */}
+            <SwimPerformance />
+            
+            {/* Health Section with divider */}
+            <div className="border-t border-slate-700/50 pt-4">
+              <h4 className="text-sm font-medium text-slate-300 mb-3 text-left">Health Metrics</h4>
               <Health />
-            )}
+            </div>
           </div>
 
         </div>

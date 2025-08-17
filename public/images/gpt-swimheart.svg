@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Speed lines (left of heart) -->
+  <line x1="8" y1="20" x2="18" y2="20" />
+  <line x1="8" y1="26" x2="14" y2="26" />
+  <line x1="8" y1="32" x2="12" y2="32" />
+
+  <!-- Heart -->
+  <path d="M32 20
+           c-4-6 -12-4 -12 4
+           c0 5 6 10 12 16
+           c6-6 12-11 12-16
+           c0-8 -8-10 -12-4z" />
+
+  <!-- Wave under heart -->
+  <path d="M8 54c2-2 4-2 6 0s4 2 6 0 4-2 6 0 4 2 6 0 4-2 6 0 4 2 6 0 4-2 6 0 4 2 6 0" />
+</svg>
