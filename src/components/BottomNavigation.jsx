@@ -1,39 +1,7 @@
-import { useState, useEffect } from 'react';
 import { CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { CalendarDaysIcon as CalendarDaysSolidIcon } from '@heroicons/react/24/solid';
 
 function BottomNavigation({ activeTab, onTabChange }) {
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useEffect(() => {
-    const controlNavbar = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Show navbar when scrolling up or at top
-      if (currentScrollY < lastScrollY || currentScrollY <= 50) {
-        setIsVisible(true);
-      } 
-      // Hide navbar when scrolling down (but not on very small scrolls)
-      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    // Add scroll listener
-    window.addEventListener('scroll', controlNavbar);
-    
-    // Also listen to touch events for better mobile experience
-    window.addEventListener('touchmove', controlNavbar);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('scroll', controlNavbar);
-      window.removeEventListener('touchmove', controlNavbar);
-    };
-  }, [lastScrollY]);
   const tabs = [
     {
       id: 'reserve',
@@ -60,11 +28,9 @@ function BottomNavigation({ activeTab, onTabChange }) {
   ];
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out ${
-      isVisible ? 'translate-y-0' : 'translate-y-full'
-    }`}>
-      {/* Navigation Bar - More subtle styling */}
-      <div className="bg-slate-800/40 backdrop-blur-sm border-t border-slate-600/30">
+    <div className="fixed bottom-0 left-0 right-0 z-50">
+      {/* Navigation Bar - Darker and always visible */}
+      <div className="bg-slate-800/80 backdrop-blur-md border-t border-slate-600/50 shadow-lg">
         <div className="flex">
           {tabs.map((tab) => {
             return (
@@ -113,7 +79,7 @@ function BottomNavigation({ activeTab, onTabChange }) {
       </div>
       
       {/* Safe area padding for mobile devices */}
-      <div className="bg-slate-800/40 h-safe-area-inset-bottom"></div>
+      <div className="bg-slate-800/80 h-safe-area-inset-bottom"></div>
     </div>
   );
 }
