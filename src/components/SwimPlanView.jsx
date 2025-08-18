@@ -278,21 +278,25 @@ function SwimPlanView() {
                   </div>
                   
                   {/* Segmented Control for Pain Level */}
-                  <div className="bg-slate-800/50 rounded-full p-1 flex w-full gap-1 justify-between">
-                    {/* Individual circle buttons for 0-10 */}
-                    {Array.from({ length: 11 }, (_, i) => i).map((level) => (
-                      <button
-                        key={level}
-                        onClick={() => handlePainLevelChange(level)}
-                        className={`py-2 px-1 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 flex-1 ${
-                          shoulderPain === level
-                            ? 'bg-[#A8F5E0] text-slate-900'
-                            : 'bg-transparent text-slate-300 hover:bg-slate-700/30'
-                        }`}
-                      >
-                        {level}
-                      </button>
-                    ))}
+                  <div className="w-full">
+                    <div className="bg-slate-800/50 rounded-full p-1 overflow-x-auto scrollbar-hide">
+                      <div className="flex gap-1 min-w-max">
+                        {/* Individual circle buttons for 0-10 */}
+                        {Array.from({ length: 11 }, (_, i) => i).map((level) => (
+                          <button
+                            key={level}
+                            onClick={() => handlePainLevelChange(level)}
+                            className={`px-3 py-2 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 min-w-[2.5rem] flex-shrink-0 ${
+                              shoulderPain === level
+                                ? 'bg-[#A8F5E0] text-slate-900'
+                                : 'bg-transparent text-slate-300 hover:bg-slate-700/30'
+                            }`}
+                          >
+                            {level}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
